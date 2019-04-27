@@ -11,11 +11,12 @@ upon him like parasites.
 from dataclasses import dataclass
 from .player import Player
 
+#from .. import Shipyard
 
 @dataclass
 class Harkonnen(Player):
 
-    yard: ShipYard = None
+    yard: Shipyard = None
     basepos: Position = Star.PLEIONE.position
     ships: list[Ship] = []
     harvesters: list[Harvester] = []
@@ -144,5 +145,5 @@ class Harkonnen(Player):
             self.harvesters.append(cm)
 
     def build_shipyard(self):
-        yard = ShipYard(self.base_pos, self.hq, self)
+        yard = Shipyard(self.base_pos, self.hq, self)
         game.instance.add(yard)

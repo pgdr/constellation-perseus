@@ -1,17 +1,19 @@
 from dataclasses import dataclass
+from typing import List
 
 from . import Ship
-from .. import Player, Position
+from .. import Player, Position, GameObject, GameObjectAction
 
 
 @dataclass
 class Fleet(GameObject):
 
-    ships: list[Ship]
+    actions: List[GameObjectAction]
+
+    ships: List[Ship]
     position: Position
     name: str
 
-    actions: list[GameObjectActions]
     owner: Player
 
     def _ready(self):

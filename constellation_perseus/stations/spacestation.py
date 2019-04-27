@@ -1,13 +1,16 @@
 from dataclasses import dataclass
 
+from .. import GameObject, Position, Player
+from .. import Hq
+
 
 @dataclass
 class SpaceStation(GameObject):
-    damage: float = 1.0
+    default_hq: Hq
     position: Position
     name: str
-    default_hq: Hq
     owner: Player
+    damage: float = 1.0
 
     def under_construction(self):
         return False

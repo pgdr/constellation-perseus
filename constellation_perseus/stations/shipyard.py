@@ -1,4 +1,11 @@
-class ShipYard(SpaceStation):
+from typing import List, Dict
+
+from .spacestation import SpaceStation
+from .. import ShipClassification, GameObjectAction
+
+from .. import Ship
+
+class Shipyard(SpaceStation):
 
     SHIP_CONSTRUCTION_TIME = {
         ShipClassification.HARVESTER: 2000,
@@ -8,16 +15,16 @@ class ShipYard(SpaceStation):
     construction_time: int = 1500
     # 2000 ms = 2 sec;
     counstructed_at: int
-    actions: list[GameObjectActions] = [
-        GameObjectActions.BUILD_SHIP,
-        GameObjectActions.BUILD_CARBONHARVESTER,
-        GameObjectActions.BUILD_OXYGENHARVESTER,
-        GameObjectActions.BUILD_COLONIALVIPER,
+    actions: List[GameObjectAction] = [
+        GameObjectAction.BUILD_SHIP,
+        GameObjectAction.BUILD_CARBONHARVESTER,
+        GameObjectAction.BUILD_OXYGENHARVESTER,
+        GameObjectAction.BUILD_COLONIALVIPER,
     ]
-    constructed: boolean = False
-    ship_construction: dict[Ship, int]
+    constructed: bool = False
+    ship_construction: Dict[Ship, int]
 
-    name: str = "ShipYard"
+    name: str = "Shipyard"
 
     def construct_ship(self, ship: Ship, time: int):
         print("Constructing ship now: " + (time / 1000) + " sec")

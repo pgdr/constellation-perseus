@@ -52,7 +52,7 @@ class Game:
         add(hq)
         hq.star = Star.SOL
 
-        yard = ShipYard(hq.position.add(Position(0, 50, 0)), hq, human)
+        yard = Shipyard(hq.position.add(Position(0, 50, 0)), hq, human)
         add(yard)
 
         self.set_contributors()

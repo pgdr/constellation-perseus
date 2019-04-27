@@ -15,7 +15,7 @@ from .players import Player
 @dataclass
 class GameObject:
 
-    #position: Position  # Deprecated
+    # position: Position  # Deprecated
 
     def tick(self, time: int):
         """Tick, time is the absolute game time, which might overflow. lol, not!

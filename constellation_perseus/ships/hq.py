@@ -17,7 +17,7 @@ class Hq(Ship):
     star: Star = None  # This is the star the HqShip is orbiting. Might be None.
     harvesters: List[
         Harvester
-    ] = None # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
+    ] = None  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
     assets: Dict[Allotrope, int] = None  # The assets owned by this hq.
     COOLDOWN_TIME: int = 10 * 1000  # 10 seconds
 

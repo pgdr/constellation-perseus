@@ -1,8 +1,8 @@
 from .gun import Gun
 from dataclasses import dataclass
 
-@dataclass
 
+@dataclass
 class KineticEnergyWeapon(Gun):
     ammo: int = 10 ** 10
     damage_caused: float = 0.1

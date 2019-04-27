@@ -2,6 +2,7 @@ from .gun import Gun
 
 from dataclasses import dataclass
 
+
 @dataclass
 class ViperMissile(Gun):
     ammo: int = 1000

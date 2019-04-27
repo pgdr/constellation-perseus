@@ -11,8 +11,9 @@ from typing import List
 from dataclasses import dataclass
 from .player import Player
 from .. import Star, Stars, Position
-from ..import Ship
+from .. import Ship
 from ..ship.harvesters import Harvester
+
 
 @dataclass
 class Harkonnen(Player):
@@ -147,5 +148,6 @@ class Harkonnen(Player):
 
     def build_shipyard(self):
         from constellation_perseus import Shipyard
+
         yard = Shipyard(self.base_pos, self.hq, self)
         game.instance.add(yard)

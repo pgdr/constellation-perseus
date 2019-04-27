@@ -11,6 +11,7 @@ from .position import Position
 from .gameobjectaction import GameObjectAction
 from .players import Player
 
+
 @dataclass
 class GameObject:
 

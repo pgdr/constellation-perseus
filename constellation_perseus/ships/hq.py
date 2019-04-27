@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from . import ship
 from ship import Ship
 
+
 @dataclass
 class Hq(Ship):
     COOLDOWN_TIME: int = 10 * 1000  # 10 seconds

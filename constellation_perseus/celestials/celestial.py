@@ -20,6 +20,7 @@ diffuse coma and tail.
 
 from dataclasses import dataclass
 
+
 @dataclass
 class Celestial(GameObject):
     lumen: float

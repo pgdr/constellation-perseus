@@ -5,7 +5,8 @@ from constellation_perseus import Allotrope
 from constellation_perseus import Message
 
 
-#from constellation_perseus import Hq
+# from constellation_perseus import Hq
+
 
 @dataclass
 class Player:

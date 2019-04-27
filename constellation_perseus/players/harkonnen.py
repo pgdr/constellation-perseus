@@ -10,6 +10,7 @@ upon him like parasites.
 
 from dataclasses import dataclass
 
+
 @dataclass
 class Harkonnen(Player):
 

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
-#from .players import Player
+# from .players import Player
 import enum
+
 
 class MessageType(enum.Enum):
     DIPLOMACY = "Diplomatic cable"
@@ -14,8 +15,8 @@ class MessageType(enum.Enum):
 
 @dataclass
 class Message:
-    to_ : object  #: Player
-    from_ : object #: Player
+    to_: object  #: Player
+    from_: object  #: Player
     content: str
     type_: MessageType
     created: int

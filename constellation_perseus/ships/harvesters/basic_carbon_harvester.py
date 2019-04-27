@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class BasicCarbonHarvester(Harvester):
     COOLDOWN_TIME: int = 2000  # 2 sec

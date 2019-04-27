@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class SpaceStation(GameObject):
     damage: float = 1.0

@@ -5,6 +5,7 @@ from .. import ShipClassification, GameObjectAction
 
 from .. import Ship
 
+
 class Shipyard(SpaceStation):
 
     SHIP_CONSTRUCTION_TIME = {

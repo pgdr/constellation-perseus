@@ -25,7 +25,7 @@ from .ships import ColonialViper
 from .ships import Hq
 from .stations import SpaceStation, Shipyard
 
-#from .players import Harkonnen
+# from .players import Harkonnen
 
 
 def game_loop():

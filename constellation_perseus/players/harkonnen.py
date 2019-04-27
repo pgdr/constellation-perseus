@@ -11,7 +11,8 @@ upon him like parasites.
 from dataclasses import dataclass
 from .player import Player
 
-#from .. import Shipyard
+# from .. import Shipyard
+
 
 @dataclass
 class Harkonnen(Player):

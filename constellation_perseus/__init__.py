@@ -14,11 +14,12 @@ from .players.player import Player
 from .gameobject import GameObject
 
 
-from .weapons import Gun
+from .weapons import Gun, ViperMissile, KineticEnergyWeapon
 
 from .celestials import Celestial, Star
+from .ships import ColonialViper
 
-from .ships import Hq
+#from .ships import Hq
 
 
 def game_loop():

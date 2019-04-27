@@ -15,14 +15,14 @@ from .shipclassification import ShipClassification
 
 @dataclass
 class Ship(GameObject):
-    classification: ShipClassification
-    cooldowntime: int
-    pos: Position
-    actions: List[GameObjectAction]
-    price: Dict[Allotrope, int]
-    guns: List[Gun]
-    name: str
-    owner: Player
+    classification: ShipClassification = None
+    cooldowntime: int = None
+    position: Position = None
+    actions: List[GameObjectAction] = None
+    price: Dict[Allotrope, int] = None
+    guns: List[Gun] = None
+    name: str = None
+    owner: Player = None
 
     damage: float = 1
     state: GameObjectState = GameObjectState.IDLE

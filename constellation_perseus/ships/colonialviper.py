@@ -5,16 +5,25 @@ conventional missiles.
 
 """
 
+import dataclasses
 from dataclasses import dataclass
+from typing import Dict, List
 
 
-@dataclass
+from .ship import Ship
+from .shipclassification import ShipClassification
+
+from .. import Allotropes, Allotrope, Position, GameObjectState
+
+from .. import Gun, ViperMissile, KineticEnergyWeapon
+
+@dataclass(frozen=False)
 class ColonialViper(Ship):
-
-    COOLDOWNTIME: int = 3500  # 1.5 sec
-
-    price: dict[Allotrope, int] = {Allotrope.OXYGEN: 3000, Allotrope.CARBON: 7000}
-
+    cooldowntime: int = 3500  # 1.5 sec
+    price: Dict[Allotrope, int] = dataclasses.field(default_factory={Allotropes.OXYGEN: 3000, Allotropes.CARBON: 7000})
     name: str = "Mark I Colonial Viper"
     classification: str = ShipClassification.VIPER
-    guns: list[Gun] = [ViperMissile(), KineticEnergyWeapon(), KineticEnergyWeapon()]
+    guns: List[Gun] = dataclasses.field(default_factory=[ViperMissile(), KineticEnergyWeapon(), KineticEnergyWeapon()])
+    damage: float = 1
+    state: GameObjectState = GameObjectState.IDLE
+    lastjumptime: int = -10 ** 10

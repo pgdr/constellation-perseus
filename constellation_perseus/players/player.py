@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from constellation_perseus import Position
 from constellation_perseus import Allotrope
@@ -10,9 +10,9 @@ from constellation_perseus import Message
 
 @dataclass
 class Player:
-    hqs: list  # TODO list[Hq]
-    inbox: list  # TODO list[Message]
     name: str
+    hqs: list = None  # field(default_factory=[])  # TODO list[Hq]
+    inbox: list = None  # field(default_factory=[]) # TODO list[Message]
 
     @property
     def position(self) -> Position:
@@ -43,3 +43,9 @@ class Player:
 
     def send_message(self, message: Message):
         self.inbox.append(message)
+
+    def add_hq(self, hq):
+        if not self.hqs:
+            self.hqs = [hq]
+        else:
+            self.hqs.append(hq)

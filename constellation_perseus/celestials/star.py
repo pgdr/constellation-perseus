@@ -1,6 +1,7 @@
 """Stars are nuclear fusion devices converting hydrogen to helium.
 
 """
+from dataclasses import dataclass
 
 from .. import Position
 
@@ -9,8 +10,9 @@ from .celestial import Celestial
 from .. import Position
 
 
+@dataclass(frozen=True)
 class Star(Celestial):
-    pass
+    sc: StarClassification
 
 
 class Stars:

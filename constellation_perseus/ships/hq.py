@@ -4,11 +4,11 @@ A HqShip is the/a head quarter of a player.
 @author pgd
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict
 
-from .ship import Ship
-from .. import Allotrope, Star, Position, GameObject, Player
+from .ship import Ship, ShipClassification
+from .. import Allotrope, Allotropes, Star, Position, GameObject, Player
 from .harvesters import Harvester
 
 
@@ -18,22 +18,32 @@ class Hq(Ship):
     harvesters: List[
         Harvester
     ] = None  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
-    assets: Dict[Allotrope, int] = None  # The assets owned by this hq.
-    COOLDOWN_TIME: int = 10 * 1000  # 10 seconds
+    assets: Dict[Allotrope, int] = field(
+        default_factory={
+            Allotropes.OXYGEN: 1000,
+            Allotropes.CARBON: 800,
+            Allotropes.SELENIUM: 7000,
+        }
+    )  # The assets owned by this hq.
+    cooldown_time: int = 10 * 1000  # 10 seconds
 
-    def __init__(self, name: str, pos: Position, yield_: GameObject, owner: Player):
-        __super__(self, name, ShipClassification.HQ, position, COOLDOWN_TIME, owner, {})
+    def __init__(
+        self, name: str, position: Position, yield_: GameObject, owner: Player
+    ):
+        super(Hq, self).__init__(
+            name, ShipClassification.HQ, position, self.cooldown_time, owner, {}
+        )
 
         self.assets = {
-            Allotrope.OXYGEN: 1000,
-            Allotrope.CARBON: 800,
-            Allotrope.SELENIUM: 7000,
+            Allotropes.OXYGEN: 1000,
+            Allotropes.CARBON: 800,
+            Allotropes.SELENIUM: 7000,
         }
 
-    def buy(self, ship: Ship):
+    async def buy(self, ship: Ship):
         lock = asyncio.Lock()
 
-        with lock:
+        async with lock:
             assert ship.owner == self.owner(), "Owner of ship is not owner of hq buying"
 
             if not self.can_afford(ship):

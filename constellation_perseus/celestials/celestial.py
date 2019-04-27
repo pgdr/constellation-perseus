@@ -24,12 +24,16 @@ from typing import List
 from .. import GameObject, GameObjectState, GameObjectAction, Position
 
 
-@dataclass
+@dataclass(frozen=True)
 class Celestial(GameObject):
-    position: Position
-    actions: List[GameObjectAction]
     lumen: float
     mass: float
     radius: float
+
     name: str
-    state: GameObjectState = None
+
+    state: GameObjectState
+
+    position: Position
+
+    actions: List[GameObjectAction]

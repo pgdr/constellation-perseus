@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from .. import GameObject, Position, Player
-from .. import Hq
+from ..ships import Hq
 
 
 @dataclass

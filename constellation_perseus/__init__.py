@@ -23,11 +23,15 @@ from .ships import ShipClassification
 from .ships import Ship
 from .ships import ColonialViper
 
-# from .players.harkonnen import Harkonnen
+from .players.harkonnen import Harkonnen
 
 from .ships import Hq
 
 from .stations import SpaceStation, Shipyard
+
+from .game import Game
+
+game = Game()
 
 
 def game_loop():

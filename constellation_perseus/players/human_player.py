@@ -5,4 +5,4 @@ from .player import Player
 @dataclass
 class HumanPlayer(Player):
     def __init__(self):
-        __super__(self, "Jonas")
+        super(HumanPlayer, self).__init__("Jonas")

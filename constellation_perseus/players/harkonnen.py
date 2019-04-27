@@ -12,20 +12,24 @@ from dataclasses import dataclass
 from .player import Player
 from .. import Star, Stars, Position
 from .. import Ship
-from ..ship.harvesters import Harvester
+from ..ships.harvesters import Harvester
+from ..stations import Shipyard
 
 
 @dataclass
 class Harkonnen(Player):
 
-    yard: object = None  # Shipyard
+    yard: Shipyard = None
     basepos: Position = Stars.PLEIONE.position
-    ships: List[Ship] = []
-    harvesters: List[Harvester] = []
+    ships: List[Ship] = None
+    harvesters: List[Harvester] = None
     last_tick: int = -1
 
     THINK_TIME: int = 25
     INIT_TIME: int = 3000
+
+    def __init__(self):
+        super(Harkonnen, self).__init__("Harkonnen")
 
     def tick(self, time: int):
         if time < self.INIT_TIME:

@@ -7,20 +7,20 @@ upon him like parasites.
 @author pgd
 
 """
-
+from typing import List
 from dataclasses import dataclass
 from .player import Player
-
-# from .. import Shipyard
-
+from .. import Star, Stars, Position
+from ..import Ship
+from ..ship.harvesters import Harvester
 
 @dataclass
 class Harkonnen(Player):
 
-    yard: Shipyard = None
-    basepos: Position = Star.PLEIONE.position
-    ships: list[Ship] = []
-    harvesters: list[Harvester] = []
+    yard: object = None  # Shipyard
+    basepos: Position = Stars.PLEIONE.position
+    ships: List[Ship] = []
+    harvesters: List[Harvester] = []
     last_tick: int = -1
 
     THINK_TIME: int = 25
@@ -146,5 +146,6 @@ class Harkonnen(Player):
             self.harvesters.append(cm)
 
     def build_shipyard(self):
+        from constellation_perseus import Shipyard
         yard = Shipyard(self.base_pos, self.hq, self)
         game.instance.add(yard)

@@ -9,7 +9,6 @@ Can be destroyed, and have a concept of time and position.
 from dataclasses import dataclass
 from .position import Position
 from .gameobjectaction import GameObjectAction
-from .players import Player
 
 
 @dataclass
@@ -57,7 +56,7 @@ destroyed.
         """
         pass
 
-    def owner(self) -> Player:
+    def owner(self):
         """Might return null, but if ship or station returns player
 
         @return

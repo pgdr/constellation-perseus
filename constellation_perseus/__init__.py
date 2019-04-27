@@ -8,24 +8,26 @@ from .gameobjectaction import GameObjectAction
 from .gameobjectstate import GameObjectState
 
 from .message import Message
-
-from .players.player import Player
-from .players import HumanPlayer
-
 from .gameobject import GameObject
+
+from .celestials import Celestial, Star, Stars
 
 
 from .weapons import Gun, ViperMissile, KineticEnergyWeapon
 
-from .celestials import Celestial, Star
+from .players.player import Player
+from .players import HumanPlayer
+
+
 from .ships import ShipClassification
 from .ships import Ship
 from .ships import ColonialViper
 
-from .ships import Hq
-from .stations import SpaceStation, Shipyard
+#from .players.harkonnen import Harkonnen
 
-# from .players import Harkonnen
+from .ships import Hq
+
+from .stations import SpaceStation, Shipyard
 
 
 def game_loop():

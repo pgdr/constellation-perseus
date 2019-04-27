@@ -26,7 +26,7 @@ from .. import GameObject, GameObjectState, GameObjectAction, Position
 
 @dataclass
 class Celestial(GameObject):
-    pos: Position
+    position: Position
     actions: List[GameObjectAction]
     lumen: float
     mass: float

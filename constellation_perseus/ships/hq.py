@@ -11,11 +11,14 @@ from .ship import Ship
 from .. import Allotrope, Star, Position, GameObject, Player
 from .harvesters import Harvester
 
+
 @dataclass
 class Hq(Ship):
     star: Star  # This is the star the HqShip is orbiting. Might be null.
     COOLDOWN_TIME: int = 10 * 1000  # 10 seconds
-    harvesters: List[Harvester] # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
+    harvesters: List[
+        Harvester
+    ]  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
     assets: Dict[Allotrope, int]  # The assets owned by this hq.
 
     def __init__(self, name: str, pos: Position, yield_: GameObject, owner: Player):

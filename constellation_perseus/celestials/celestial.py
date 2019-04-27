@@ -23,6 +23,7 @@ from typing import List
 
 from .. import GameObject, GameObjectState, GameObjectAction, Position
 
+
 @dataclass
 class Celestial(GameObject):
     pos: Position

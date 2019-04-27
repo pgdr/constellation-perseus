@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from .. import Allotrope, Allotropes
 
+
 @dataclass
 class StarClassification:
     name: str
@@ -10,6 +11,7 @@ class StarClassification:
 
 
 import enum
+
 
 class StarClassifications(enum.Enum):
 

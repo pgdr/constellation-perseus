@@ -21,6 +21,5 @@ from .celestials import Celestial, Star
 from .ships import Hq
 
 
-
 def game_loop():
     asyncio.get_event_loop()

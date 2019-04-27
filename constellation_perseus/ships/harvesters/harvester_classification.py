@@ -10,6 +10,7 @@ import enum
 from dataclasses import dataclass
 from ... import Allotropes, Allotrope
 
+
 @dataclass
 class HarvesterClassification:
 

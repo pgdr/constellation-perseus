@@ -7,6 +7,7 @@ from .. import Position
 from .starclassification import StarClassifications
 from .celestial import Celestial
 
+
 class Star(Celestial):
     pass
 
@@ -25,4 +26,6 @@ CELAENO = Star(240, 9, 4.4, "Celaeno", Position(650, 500, 500), StarClassificati
 # fix these
 TAYGETA = Star(850, 5, 6.04, "Taygeta", Position(600, 600, 500), StarClassifications.B)
 STEROPE = Star(850, 5, 6.04, "Sterope", Position(550, 650, 500), StarClassifications.B)
-ASTEROPE = Star(850, 5, 6.04, "Asterope", Position(530, 630, 500), StarClassifications.B)
+ASTEROPE = Star(
+    850, 5, 6.04, "Asterope", Position(530, 630, 500), StarClassifications.B
+)

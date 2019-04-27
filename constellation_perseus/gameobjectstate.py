@@ -1,5 +1,6 @@
 import enum
 
+
 class GameObjectState(enum.Enum):
 
     #
@@ -24,4 +25,3 @@ class GameObjectState(enum.Enum):
     ATTACKING = enum.auto()
 
     BUILDING = enum.auto()
-

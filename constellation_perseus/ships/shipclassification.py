@@ -1,5 +1,6 @@
 import enum
 
+
 class ShipClassification(enum.Enum):
 
     HQ = enum.auto()  # The head quarter of a player.

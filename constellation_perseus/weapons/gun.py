@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from .. import GameObject
 
+
 @dataclass
 class Gun(GameObject):
     ammo: int

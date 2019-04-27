@@ -2,11 +2,13 @@ from dataclasses import dataclass
 from .color import Color
 import enum
 
+
 @dataclass
 class Allotrope:
     name: str
     abbr: str
     color: str
+
 
 class Allotropes(enum.Enum):
     OXYGEN = Allotrope("Oxygen", "O", Color.PINK)

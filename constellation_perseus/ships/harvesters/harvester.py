@@ -1,4 +1,12 @@
+from typing import List
+
+from ... import GameObjectAction
+
 from .. import Ship
+from .. import ShipClassification
+from ... import Star
+#from .. import Hq
+from .harvester_classification import HarvesterClassification
 
 
 class Harvester(Ship):
@@ -7,9 +15,9 @@ class Harvester(Ship):
     ship_classification: ShipClassification = ShipClassification.HARVESTER
     amount: int
     capacity: int
-    default_hq: Hq
+    default_hq: object # TODO Hq
     at_hq: bool = False
-    actions = list[GameObjectActions]
+    actions = List[GameObjectAction]
 
     def percentage(self):
         if self.isfull():

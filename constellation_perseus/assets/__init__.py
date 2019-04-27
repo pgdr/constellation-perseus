@@ -1,4 +1,4 @@
 from .color import Color
 
 
-from .allotrope import Allotrope
+from .allotrope import Allotrope, Allotropes

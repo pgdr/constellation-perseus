@@ -9,6 +9,7 @@ upon him like parasites.
 """
 
 from dataclasses import dataclass
+from .player import Player
 
 
 @dataclass

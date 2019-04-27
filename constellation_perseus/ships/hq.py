@@ -5,24 +5,18 @@ A HqShip is the/a head quarter of a player.
 """
 
 from dataclasses import dataclass
-from . import ship
-from ship import Ship
+from typing import List, Dict
 
+from .ship import Ship
+from .. import Allotrope, Star, Position, GameObject, Player
+from .harvesters import Harvester
 
 @dataclass
 class Hq(Ship):
-    COOLDOWN_TIME: int = 10 * 1000  # 10 seconds
     star: Star  # This is the star the HqShip is orbiting. Might be null.
-
-    #  The list of all harvesters this Hq operates. Note that this is not the
-    #  same as all the harvesters a player has.
-
-    harvesters: list[Harvester]
-
-    #
-    #  The assets owned by this hq.
-    # /
-    assets: dict[Allotrope, Integer]
+    COOLDOWN_TIME: int = 10 * 1000  # 10 seconds
+    harvesters: List[Harvester] # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
+    assets: Dict[Allotrope, int]  # The assets owned by this hq.
 
     def __init__(self, name: str, pos: Position, yield_: GameObject, owner: Player):
         __super__(self, name, ShipClassification.HQ, position, COOLDOWN_TIME, owner, {})

@@ -5,12 +5,13 @@ so.
 
 """
 
+import enum
 
 from dataclasses import dataclass
-
+from ... import Allotropes, Allotrope
 
 @dataclass
-class HarvesterClassification(enum):
+class HarvesterClassification:
 
     harvestSpeed: float
     allotrope: Allotrope
@@ -19,10 +20,11 @@ class HarvesterClassification(enum):
         return f"{self.name}: {self.speed} {self.allotrope}"
 
 
-SPICE_SHIP = HarvesterClassification(2, Allotrope.SULFUR)  #  get it?
-CARBON_COLLECTOR = HarvesterClassification(76, Allotrope.CARBON)
-PHOSPORUS_MINER = HarvesterClassification(12, Allotrope.PHOSPORUS)
-OXYGEN_MINER = HarvesterClassification(97, Allotrope.OXYGEN)
-SULFUR_MINER = HarvesterClassification(16, Allotrope.SULFUR)
-SELENIUM_MINER = HarvesterClassification(72, Allotrope.SELENIUM)
-DYSON_SPHERE = HarvesterClassification(450, Allotrope.OXYGEN)
+class HarvesterClassifications(enum.Enum):
+    SPICE_SHIP = HarvesterClassification(2, Allotropes.SULFUR)  #  get it?
+    CARBON_COLLECTOR = HarvesterClassification(76, Allotropes.CARBON)
+    PHOSPORUS_MINER = HarvesterClassification(12, Allotropes.PHOSPORUS)
+    OXYGEN_MINER = HarvesterClassification(97, Allotropes.OXYGEN)
+    SULFUR_MINER = HarvesterClassification(16, Allotropes.SULFUR)
+    SELENIUM_MINER = HarvesterClassification(72, Allotropes.SELENIUM)
+    DYSON_SPHERE = HarvesterClassification(450, Allotropes.OXYGEN)

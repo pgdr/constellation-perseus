@@ -1,20 +1,32 @@
 from dataclasses import dataclass
 
+from typing import Dict, List
+
+from .. import GameObject
+from .. import GameObjectState
+from .. import GameObjectAction
+from .. import Allotrope
+from .. import Position
+from .. import Player
+from .. import Gun
+
+from .shipclassification import ShipClassification
+
 
 @dataclass
 class Ship(GameObject):
-
-    price: dict[Allotrope, int]
-    guns: list[Gun]
-    name: str
     classification: ShipClassification
+    cooldowntime: int
+    pos: Position
+    actions: List[GameObjectAction]
+    price: Dict[Allotrope, int]
+    guns: List[Gun]
+    name: str
+    owner: Player
+
     damage: float = 1
     state: GameObjectState = GameObjectState.IDLE
-    pos: Position
-    cooldowntime: int
     lastjumptime: int = -10 ** 10
-    owner: Player
-    actions: list[GameObjectActions]
 
     def price_of(self, a: Allotrope):
         return price.get(a, 0)

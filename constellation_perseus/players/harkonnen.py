@@ -1,13 +1,14 @@
-""" * House Harkonnen, from the volcanic wastelands of Giedi Prime. The Harkonnen
- * know only malevolence, hatred and brutality. Their leader is the corrupt and
- * vile Baron Rakan. Rakan's power-hungry sons — Gunseng and Copec — eagerly
- * await the Baron's death. Each plots to take his place. But while he lives,
- * they feed upon him like parasites.
- * 
- * @author pgd
- * 
- """
+"""House Harkonnen, from the volcanic wastelands of Giedi Prime.  The Harkonnen
+know only malevolence, hatred and brutality.  Their leader is the corrupt and
+vile Baron Rakan.  Rakan's power-hungry sons — Gunseng and Copec — eagerly await
+the Baron's death.  Each plots to take his place.  But while he lives, they feed
+upon him like parasites.
 
+@author pgd
+
+"""
+
+from dataclasses import dataclass
 
 @dataclass
 class Harkonnen(Player):

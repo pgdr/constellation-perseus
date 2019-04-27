@@ -1,7 +1,16 @@
+from dataclasses import dataclass
+
+from constellation_perseus import Position
+from constellation_perseus import Allotrope
+from constellation_perseus import Message
+
+
+#from constellation_perseus import Hq
+
 @dataclass
 class Player:
-    hqs: list[Hq]
-    inbox: list[Message]
+    hqs: list  # TODO list[Hq]
+    inbox: list  # TODO list[Message]
     name: str
 
     @property

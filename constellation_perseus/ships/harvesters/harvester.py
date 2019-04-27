@@ -1,3 +1,5 @@
+from .. import Ship
+
 class Harvester(Ship):
     star: Star  # The star it is connected to, might be None
     harvester_classification: HarvesterClassification

@@ -1,3 +1,8 @@
+from dataclasses import dataclass
+
+from . import Ship
+from .. import Player, Position
+
 @dataclass
 class Fleet(GameObject):
 

@@ -1,10 +1,12 @@
-"""
-  Defines the harvester type, what it harvests/mines and at what speed it does
-  so.
+"""Defines the harvester type, what it harvests/mines and at what speed it does
+so.
 
-  @author pgd
+@author pgd
+
 """
 
+
+from dataclasses import dataclass
 
 @dataclass
 class HarvesterClassification(enum):

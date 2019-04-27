@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 @dataclass
 class BasicOxygenHarvester(Harvester):
     COOLDOWN_TIME: int = 3000  # 3 sec

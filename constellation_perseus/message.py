@@ -1,4 +1,9 @@
-class MessageType(enum):
+from dataclasses import dataclass
+
+#from .players import Player
+import enum
+
+class MessageType(enum.Enum):
     DIPLOMACY = "Diplomatic cable"
     WARNING = "Proposed sanction"
     THREAT = "Military intent"
@@ -9,14 +14,10 @@ class MessageType(enum):
 
 @dataclass
 class Message:
-    to_: Player
-    from_: Player
+    to_ : object  #: Player
+    from_ : object #: Player
     content: str
     type_: MessageType
+    created: int
     archived: bool = False
     read: bool = False
-    created: int
-
-    @static_method
-    def internal(msg):
-        pass

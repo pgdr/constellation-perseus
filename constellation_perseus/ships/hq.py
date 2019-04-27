@@ -4,6 +4,9 @@ A HqShip is the/a head quarter of a player.
 @author pgd
 """
 
+from dataclasses import dataclass
+from . import ship
+from ship import Ship
 
 @dataclass
 class Hq(Ship):

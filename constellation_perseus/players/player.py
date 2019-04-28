@@ -44,6 +44,12 @@ class Player:
     def send_message(self, message: Message):
         self.inbox.append(message)
 
+    @property
+    def hq(self):
+        if self.hqs:
+            return self.hqs[0]
+        return None
+
     def add_hq(self, hq):
         if not self.hqs:
             self.hqs = [hq]

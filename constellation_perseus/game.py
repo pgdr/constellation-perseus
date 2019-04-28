@@ -42,11 +42,14 @@ class Game:
 
     def __init__(self):
         self._setup()
+        self.instance = self
+        Game.instance = self
 
     def _setup(self):
+        self.initialize_time = time.time()
         human = HumanPlayer()
         harkonnen = Harkonnen()
-        players = [human, harkonnen]
+        self.players = [human, harkonnen]
 
         add = self.add
         add(Stars.SOL)
@@ -63,7 +66,7 @@ class Game:
         add(Stars.STEROPE)
         add(Stars.ASTEROPE)
 
-        hqship = Hq(name="HeadQuarter", yield_=None, owner=human)
+        hqship = Hq(name="HeadQuarter", owner=human)
         human.add_hq(hqship)
         add(hqship, Stars.SOL.position)
         hqship.set_star(Stars.SOL)
@@ -99,7 +102,7 @@ class Game:
         """
 
         n = time.time()
-        return n - initialize_time
+        return 1000.0 * (n - self.initialize_time)
 
     # @icontract...
     def send_ship_to_celestial(self, ship: Ship, cel: Celestial) -> Position:
@@ -178,9 +181,21 @@ class Game:
         def T(o):
             o.tick(self.now())
 
-        with asyncio.Lock():
-            for obj in players + celestials + stations + ships:
-                T(obj)
+        # TODO with asyncio.Lock():
+        print("\n" * 10)
+        print("===" * 10)
+        print("\n" * 10)
+        print(f"{len(self.players)} players!")
+        print(f"{len(self.celestials)} celestials")
+        print(f"{len(self.stations)} stations")
+        print(f"{len(self.ships)} ships")
+
+        for obj in self.players + self.celestials + self.stations + self.ships:
+            try:
+                print(f"ticking {obj}")
+            except Exception as e:
+                print(f"ticking type {type(obj)}")
+            T(obj)
 
     def __str__(self):
         def ntjoin(lst, header=""):
@@ -195,3 +210,9 @@ class Game:
 
     def set_contributors(self):
         self.contributors = ["Jonas Grønås Drange", "Pål Grønås Drange"]
+
+    def run(self):
+        for i in range(10):
+            time.sleep(1)
+            print(f"{i}\ttick {time.time()}")
+            self.tick()

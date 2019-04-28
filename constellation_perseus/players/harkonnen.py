@@ -8,7 +8,7 @@ upon him like parasites.
 
 """
 from typing import List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from .player import Player
 from .. import Star, Stars, Position
 from .. import Ship
@@ -21,37 +21,39 @@ class Harkonnen(Player):
 
     yard: Shipyard = None
     basepos: Position = Stars.PLEIONE.position
-    ships: List[Ship] = None
-    harvesters: List[Harvester] = None
+    ships: List[Ship] = field(default_factory=list)
+    harvesters: List[Harvester] = field(default_factory=list)
     last_tick: int = -1
+    name: str = "Harkonnen"
 
     THINK_TIME: int = 25
     INIT_TIME: int = 3000
 
-    def __init__(self):
-        super(Harkonnen, self).__init__("Harkonnen")
-
     def tick(self, time: int):
+        print(f"tick {time}")
         if time < self.INIT_TIME:
             return
-        if last_tick == -1:
-            last_tick = time
+        if self.last_tick == -1:
+            self.last_tick = time
             return
-        if last_tick + THINK_TIME > time:
+        if self.last_tick + self.THINK_TIME > time:
             return
-        last_tick = time
+        self.last_tick = time
 
-        if len(ships) < 5:
+        if len(self.ships) < 5:
             self.init_phase()
             return
 
-        if len(ships) <= 20:
+        if len(self.ships) <= 20:
             self.develop_phase()
             return
 
-        kill_phase()
+        self.kill_phase()
 
     def kill_phase(self):
+        from constellation_perseus import Game
+
+        print("HARKONNEN KILL")
         enemy = Game.instance.getClosestEnemyShip(self.hq)
         if not enemy:
             return
@@ -79,6 +81,7 @@ class Harkonnen(Player):
         return False
 
     def develop_phase(self):
+        print("HARKONNEN DEVELOP")
         self._hvs_logistic(0, Star.ATLAS)
         self._hvs_logistic(1, Star.ALCYONE)
 
@@ -97,6 +100,7 @@ class Harkonnen(Player):
             self.build_viper()
 
     def init_phase(self):
+        print("HARKONNEN INIT")
         yard = self.yard
         hvs = self.harvesters
         if not yard:
@@ -126,6 +130,8 @@ class Harkonnen(Player):
             return
 
     def build_viper(self):
+        from constellation_perseus import Game
+
         v = ColonialViper(Game.instance.get_position(Star.MAIA), self)
         if Game.instance.buy(v, self):
             print("HARKONNEN BUILDING VIPER!")
@@ -135,23 +141,27 @@ class Harkonnen(Player):
             print("HARKONNEN TO POOR FOR VIPER :(")
 
     def build_oxygenminer(self):
+        from constellation_perseus import Game
+
         print("HARKONNEN builds oxygen miner.")
 
-        cm = BasicOxygenHarvester(self.base_pos, self.hq, self)
+        cm = BasicOxygenHarvester(self.basepos, self.hq, self)
         if Game.instance.buy(cm, self):
             self.yard.construct_ship(cm, Game.now())
             self.harvesters.append(cm)
 
     def build_carbonminer(self):
+        from constellation_perseus import Game
+
         print("HARKONNEN builds carbon miner.")
 
-        cm = BasicCarbonHarvester(self.base_pos, self.hq, self)
+        cm = BasicCarbonHarvester(self.basepos, self.hq, self)
         if Game.instance.buy(cm, self):
             self.yard.construct_ship(cm, Game.now())
             self.harvesters.append(cm)
 
     def build_shipyard(self):
-        from constellation_perseus import Shipyard
+        from constellation_perseus import Shipyard, Game
 
-        yard = Shipyard(self.base_pos, self.hq, self)
-        game.instance.add(yard)
+        yard = Shipyard(self.basepos, self.hq, self)
+        Game.instance.add(yard)

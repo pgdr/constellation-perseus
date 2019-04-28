@@ -12,31 +12,20 @@ from .. import Allotrope, Allotropes, Star, Position, GameObject, Player
 from .harvesters import Harvester
 
 
+def _asset_fac():
+    return {Allotropes.OXYGEN: 1000, Allotropes.CARBON: 800, Allotropes.SELENIUM: 7000}
+
+
 @dataclass(eq=False)
 class Hq(Ship):
     star: Star = None  # This is the star the HqShip is orbiting. Might be None.
-    harvesters: List[
-        Harvester
-    ] = None  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
+    harvesters: List[Harvester] = field(
+        default_factory=list
+    )  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
     assets: Dict[Allotrope, int] = field(
-        default_factory={
-            Allotropes.OXYGEN: 1000,
-            Allotropes.CARBON: 800,
-            Allotropes.SELENIUM: 7000,
-        }
+        default_factory=_asset_fac
     )  # The assets owned by this hq.
     cooldown_time: int = 10 * 1000  # 10 seconds
-
-    def __init__(self, name: str, yield_: GameObject, owner: Player):
-        super(Hq, self).__init__(
-            name, ShipClassification.HQ, self.cooldown_time, owner, {}
-        )
-
-        self.assets = {
-            Allotropes.OXYGEN: 1000,
-            Allotropes.CARBON: 800,
-            Allotropes.SELENIUM: 7000,
-        }
 
     async def buy(self, ship: Ship):
         lock = asyncio.Lock()

@@ -31,9 +31,8 @@ class Celestial(GameObject):
     radius: float
 
     name: str
+    position: Position = None
 
-    state: GameObjectState
+    state: GameObjectState = None
 
-    position: Position
-
-    actions: List[GameObjectAction]
+    # actions: List[GameObjectAction]

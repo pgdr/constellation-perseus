@@ -13,11 +13,10 @@ from .. import Gun
 from .shipclassification import ShipClassification
 
 
-@dataclass
+@dataclass(eq=False)
 class Ship(GameObject):
     classification: ShipClassification = None
     cooldowntime: int = None
-    position: Position = None
     actions: List[GameObjectAction] = None
     price: Dict[Allotrope, int] = None
     guns: List[Gun] = None
@@ -35,24 +34,23 @@ class Ship(GameObject):
         return self.cooldowntime == 0
 
     def remaining_cooldowntime(self):
-        if lastjumptime == -10 ** 10:
+        if self.lastjumptime == -10 ** 10:
             return 0
         now = Game.now()
-        return max(0, now - lastjumptime)
+        return max(0, now - self.lastjumptime)
 
-    def jumpto(pos: Position):
+    def jumpto(self, pos: Position):
         if not self.canjump():
             return False
         Game.instance().assign_position(self, pos)
-        lastJumpTime = Game.now()
+        self.lastjumptime = Game.now()
         return True
 
     def __str__(self):
-        s = "Ship " + classification
+        s = "Ship " + str(self.classification)
 
         if not self.canjump():
-            s += " (cooling down ... "
-            s += (getCooldownTimeLeft() / 1000) + ")"
+            s += f"(cooling down ... {self.remaining_cooldowntime() / 1000})"
         return s
 
     def destructor(self):

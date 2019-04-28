@@ -12,7 +12,7 @@ import time
 from . import Player, HumanPlayer, Harkonnen, Star, Stars, Hq, Shipyard
 
 from .celestials import Celestial
-from .ships import Ship
+from .ships import Ship, ColonialViper
 from .stations import SpaceStation
 from .position import Position
 from .gameobject import GameObject
@@ -63,29 +63,25 @@ class Game:
         add(Stars.STEROPE)
         add(Stars.ASTEROPE)
 
-        hqship = Hq(
-            name="HeadQuarter",
-            position=self.get_position(Stars.SOL),
-            yield_=None,
-            owner=human,
-        )
+        hqship = Hq(name="HeadQuarter", yield_=None, owner=human)
         human.add_hq(hqship)
-        add(hqship)
-        hqship.star = Stars.SOL
+        add(hqship, Stars.SOL.position)
+        hqship.set_star(Stars.SOL)
 
-        yard = Shipyard(hqship.position.add(Position(0, 50, 0)), hqship, human)
+        yardpos = None  # self.get_position(hqship).add(Position(0, 50, 0))
+        yard = Shipyard(yardpos, hqship, human)
         add(yard)
 
         self.set_contributors()
 
         for i in range(6):
             v = ColonialViper(Stars.ELECTRA.position, human)
-            add(v)
+            add(v, Stars.ELECTRA.position)
 
         harkonnen_hq = Hq("Harkonnen", Stars.PLEIONE.position, harkonnen)
-        harkonnen.add_hq(harkonnenHq)
-        add(harkonnenHq)
-        harkonnen_hq.star = Stars.PLEIONE
+        harkonnen.add_hq(harkonnen_hq)
+        add(harkonnen_hq, Stars.PLEIONE.position)
+        harkonnen_hq.set_star(Stars.PLEIONE)
 
     def get_human_player(self):
         return players.get(0)
@@ -113,38 +109,48 @@ class Game:
         if not ship.isReadyToJump():
             return
 
-        ship.jumpto(objToPos[cel])
-        return self.assign_position(ship, objToPos[cel])
+        ship.jumpto(obj_to_pos[cel])
+        return self.assign_position(ship, obj_to_pos[cel])
 
-    async def assign_position(self, obj: GameObject, pos: Position) -> Position:
+    def assign_position(self, obj: GameObject, pos: Position) -> Position:
         """Finds the nearest uninhabitated position in space and puts obj there.  This
         method calls setPosition on obj with the position it returns.  Returns
         the position it was moved to.
 
         """
-        lock = asyncio.Lock()
-        async with lock:
-            if obj in objToPos:
-                oldpos = objToPos[obj]
-                if oldPos == position:
-                    return position  # nothing to do
-                obj_to_pos[obj] = pos
-                pos_to_obj[oldpos] = None
-                pos_to_obj[pos] = obj
+        try:
+            print(obj)
+            print(pos)
+        except TypeError as e:
+            print(" " * 30, e)
+        # lock = asyncio.Lock()
+        # async with lock:
+        if obj in self.obj_to_pos:
+            oldpos = self.obj_to_pos[obj]
+            if oldpos == position:
+                return position  # nothing to do
+            obj_to_pos[obj] = pos
+            pos_to_obj[oldpos] = None
+            pos_to_obj[pos] = obj
 
     def get_position(self, obj: GameObject) -> Position:
         return self.obj_to_pos.get(obj)
 
     # @singledispatch
-    def add(self, obj: GameObject):
+    def add(self, obj: GameObject, pos: Position = None):
         if isinstance(obj, Ship):
             self.ships.append(obj)
         elif isinstance(obj, Celestial):
             self.celestials.append(obj)
-        elif isinstance(obj, Spacestation):
+        elif isinstance(obj, SpaceStation):
             self.stations.append(obj)
-
-        self.assign_position(obj, obj.position)
+        if pos is None:
+            assert (
+                "position" in obj.__dict__
+            ), f"Game.add needs position argument for type {type(obj)}."
+            self.assign_position(obj, obj.position)
+        else:
+            self.assign_position(obj, pos)
 
     async def get(self, target: Position, range_: float) -> GameObject:
         """Returns the object closest to given position. Returns null if no object is

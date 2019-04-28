@@ -11,7 +11,7 @@ from .position import Position
 from .gameobjectaction import GameObjectAction
 
 
-@dataclass
+@dataclass(eq=False)
 class GameObject:
 
     # position: Position  # Deprecated
@@ -26,10 +26,10 @@ class GameObject:
 
     def get_damage(self):
         """Get the damage of this object. 1 means fully operational, 0 means fully
-destroyed.
-
-@return the damage of this object, [0,1] where 1 is fully operational, 0 is
         destroyed.
+
+        @return the damage of this object, [0,1] where 1 is fully operational, 0
+        is destroyed.
 
         """
         pass

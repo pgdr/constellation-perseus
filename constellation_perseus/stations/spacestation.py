@@ -4,19 +4,19 @@ from .. import GameObject, Position, Player
 from ..ships import Hq
 
 
-@dataclass
+@dataclass(eq=False)
 class SpaceStation(GameObject):
-    default_hq: Hq
-    position: Position
-    name: str
-    owner: Player
+    default_hq: Hq = None
+    position: Position = None
+    name: str = ""
+    owner: Player = None
     damage: float = 1.0
 
-    def under_construction(self):
+    def is_under_construction(self):
         return False
 
-        def __str__(self):
-            if self.is_under_construction():
-                return f"{self.name} (under construction)"
+    def __str__(self):
+        if self.is_under_construction():
+            return f"{self.name} (under construction)"
 
-            return self.name
+        return self.name

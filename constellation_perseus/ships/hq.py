@@ -12,7 +12,7 @@ from .. import Allotrope, Allotropes, Star, Position, GameObject, Player
 from .harvesters import Harvester
 
 
-@dataclass
+@dataclass(eq=False)
 class Hq(Ship):
     star: Star = None  # This is the star the HqShip is orbiting. Might be None.
     harvesters: List[
@@ -27,11 +27,9 @@ class Hq(Ship):
     )  # The assets owned by this hq.
     cooldown_time: int = 10 * 1000  # 10 seconds
 
-    def __init__(
-        self, name: str, position: Position, yield_: GameObject, owner: Player
-    ):
+    def __init__(self, name: str, yield_: GameObject, owner: Player):
         super(Hq, self).__init__(
-            name, ShipClassification.HQ, position, self.cooldown_time, owner, {}
+            name, ShipClassification.HQ, self.cooldown_time, owner, {}
         )
 
         self.assets = {
@@ -77,9 +75,10 @@ class Hq(Ship):
         return self.assets.get(allotrope, 0)
 
     def set_star(self, star: Star):
+        """Sets the star this hq is assigned to, updates position to reflect that of the
+        star
+
         """
-Sets the star this hq is assigned to, updates position to reflect that of
-the star"""
 
         if not star:
             self.star = None
@@ -100,8 +99,10 @@ the star"""
         return self.get_asset(allotrope)
 
     def add_harvester(self, harvester: Harvester):
-        """Adds a harvester to this hq's internal harvesters, sets star of harvester
-  to be this hq's star."""
+        """Adds a harvester to this hq's internal harvesters, sets star of harvester to
+        be this hq's star.
+
+        """
         self.harvesters.append(harvester)
         harvester.set_star(self.star)
         harvester.set_state(GameObjectState.HARVESTING)
@@ -116,4 +117,4 @@ the star"""
                 self.add_allotrope(allotrope, harvested)
 
     def __str__(self) -> str:
-        return "HQ, assets: " + str(assets)
+        return "HQ, assets: " + str(self.assets)

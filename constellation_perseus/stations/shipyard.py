@@ -1,4 +1,5 @@
 from typing import List, Dict
+from dataclasses import dataclass, field
 
 from .spacestation import SpaceStation
 from .. import ShipClassification, GameObjectAction
@@ -6,25 +7,27 @@ from .. import ShipClassification, GameObjectAction
 from .. import Ship
 
 
+@dataclass(eq=False)
 class Shipyard(SpaceStation):
+    counstructed_at: int = 0
 
-    SHIP_CONSTRUCTION_TIME = {
-        ShipClassification.HARVESTER: 2000,
-        ShipClassification.VIPER: 1000,
-    }
+    SHIP_CONSTRUCTION_TIME: Dict[
+        ShipClassification, int
+    ] = None  # field(default_factory={
+    #     ShipClassification.HARVESTER: 2000,
+    #     ShipClassification.VIPER: 1000,
+    # })
 
-    construction_time: int = 1500
-    # 2000 ms = 2 sec;
-    counstructed_at: int
-    actions: List[GameObjectAction] = [
-        GameObjectAction.BUILD_SHIP,
-        GameObjectAction.BUILD_CARBONHARVESTER,
-        GameObjectAction.BUILD_OXYGENHARVESTER,
-        GameObjectAction.BUILD_COLONIALVIPER,
-    ]
+    construction_time: int = 1500  # 2000 ms = 2 sec;
+    actions: List[GameObjectAction] = None  # field(default_factory=[
+    #     GameObjectAction.BUILD_SHIP,
+    #     GameObjectAction.BUILD_CARBONHARVESTER,
+    #     GameObjectAction.BUILD_OXYGENHARVESTER,
+    #     GameObjectAction.BUILD_COLONIALVIPER,
+    # ])
+    ship_construction: Dict[Ship, int] = None
+
     constructed: bool = False
-    ship_construction: Dict[Ship, int]
-
     name: str = "Shipyard"
 
     def construct_ship(self, ship: Ship, time: int):

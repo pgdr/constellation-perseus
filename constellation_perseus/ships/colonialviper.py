@@ -18,17 +18,21 @@ from .. import Allotropes, Allotrope, Position, GameObjectState
 from .. import Gun, ViperMissile, KineticEnergyWeapon
 
 
-@dataclass(frozen=False)
+def _gun_fac():
+    return [ViperMissile(), KineticEnergyWeapon(), KineticEnergyWeapon()]
+
+
+def _price_fac():
+    return {Allotropes.OXYGEN: 3000, Allotropes.CARBON: 7000}
+
+
+@dataclass(frozen=False, eq=False)
 class ColonialViper(Ship):
     cooldowntime: int = 3500  # 1.5 sec
-    price: Dict[Allotrope, int] = dataclasses.field(
-        default_factory={Allotropes.OXYGEN: 3000, Allotropes.CARBON: 7000}
-    )
+    price: Dict[Allotrope, int] = dataclasses.field(default=_price_fac)
     name: str = "Mark I Colonial Viper"
     classification: str = ShipClassification.VIPER
-    guns: List[Gun] = dataclasses.field(
-        default_factory=[ViperMissile(), KineticEnergyWeapon(), KineticEnergyWeapon()]
-    )
+    guns: List[Gun] = dataclasses.field(default_factory=_gun_fac)
     damage: float = 1
     state: GameObjectState = GameObjectState.IDLE
     lastjumptime: int = -10 ** 10

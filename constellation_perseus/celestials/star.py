@@ -2,44 +2,89 @@
 
 """
 from dataclasses import dataclass
-
+from typing import List
 from .. import Position
 
-from .starclassification import StarClassifications
+from .starclassification import StarClassifications, StarClassification
 from .celestial import Celestial
 from .. import Position
 
 
 @dataclass(frozen=True)
 class Star(Celestial):
-    sc: StarClassification
+    sc: StarClassification = None
 
 
 class Stars:
     # SOME STARS
-    SOL = Star(1, 1, 1, "Sol", Position(700, 100, 400), StarClassifications.G)
+    SOL = Star(
+        1, 1, 1, "Sol", position=Position(700, 100, 400), sc=StarClassifications.G
+    )
 
     ALCYONE = Star(
-        2400, 6, 8.2, "Alcyone", Position(200, 300, 0), StarClassifications.G
+        2400,
+        6,
+        8.2,
+        "Alcyone",
+        position=Position(200, 300, 0),
+        sc=StarClassifications.G,
     )
-    ATLAS = Star(940, 5, 5, "Atlas", Position(50, 200, 0), StarClassifications.O)
-    ELECTRA = Star(1, 1, 1, "Electra", Position(700, 250, 0), StarClassifications.B)
-    MAIA = Star(850, 5, 6.04, "Maia", Position(300, 500, 500), StarClassifications.B)
-    MEROPE = Star(630, 4.5, 4, "Merope", Position(500, 200, 500), StarClassifications.O)
+    ATLAS = Star(
+        940, 5, 5, "Atlas", position=Position(50, 200, 0), sc=StarClassifications.O
+    )
+    ELECTRA = Star(
+        1, 1, 1, "Electra", position=Position(700, 250, 0), sc=StarClassifications.B
+    )
+    MAIA = Star(
+        850, 5, 6.04, "Maia", position=Position(300, 500, 500), sc=StarClassifications.B
+    )
+    MEROPE = Star(
+        630,
+        4.5,
+        4,
+        "Merope",
+        position=Position(500, 200, 500),
+        sc=StarClassifications.O,
+    )
     PLEIONE = Star(
-        190, 3.4, 3.2, "Pleione", Position(50, 250, 500), StarClassifications.B
+        190,
+        3.4,
+        3.2,
+        "Pleione",
+        position=Position(50, 250, 500),
+        sc=StarClassifications.B,
     )
     CELAENO = Star(
-        240, 9, 4.4, "Celaeno", Position(650, 500, 500), StarClassifications.B
+        240,
+        9,
+        4.4,
+        "Celaeno",
+        position=Position(650, 500, 500),
+        sc=StarClassifications.B,
     )
 
     # fix these
     TAYGETA = Star(
-        850, 5, 6.04, "Taygeta", Position(600, 600, 500), StarClassifications.B
+        850,
+        5,
+        6.04,
+        "Taygeta",
+        position=Position(600, 600, 500),
+        sc=StarClassifications.B,
     )
     STEROPE = Star(
-        850, 5, 6.04, "Sterope", Position(550, 650, 500), StarClassifications.B
+        850,
+        5,
+        6.04,
+        "Sterope",
+        position=Position(550, 650, 500),
+        sc=StarClassifications.B,
     )
     ASTEROPE = Star(
-        850, 5, 6.04, "Asterope", Position(530, 630, 500), StarClassifications.B
+        850,
+        5,
+        6.04,
+        "Asterope",
+        position=Position(530, 630, 500),
+        sc=StarClassifications.B,
     )

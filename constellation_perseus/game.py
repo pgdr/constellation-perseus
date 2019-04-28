@@ -182,19 +182,19 @@ class Game:
             o.tick(self.now())
 
         # TODO with asyncio.Lock():
-        print("\n" * 10)
+        print("\n" * 3)
         print("===" * 10)
-        print("\n" * 10)
+        print("\n" * 3)
         print(f"{len(self.players)} players!")
         print(f"{len(self.celestials)} celestials")
         print(f"{len(self.stations)} stations")
         print(f"{len(self.ships)} ships")
 
         for obj in self.players + self.celestials + self.stations + self.ships:
-            try:
-                print(f"ticking {obj}")
-            except Exception as e:
-                print(f"ticking type {type(obj)}")
+            # try:
+            #     print(f'ticking {obj}')
+            # except Exception as e:
+            #     print(f'ticking type {type(obj)}')
             T(obj)
 
     def __str__(self):
@@ -212,7 +212,7 @@ class Game:
         self.contributors = ["Jonas Grønås Drange", "Pål Grønås Drange"]
 
     def run(self):
-        for i in range(10):
+        for i in range(100):
             time.sleep(1)
             print(f"{i}\ttick {time.time()}")
             self.tick()

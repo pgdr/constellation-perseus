@@ -7,24 +7,29 @@ from .. import ShipClassification, GameObjectAction
 from .. import Ship
 
 
+def _action_fac():
+    return [
+        GameObjectAction.BUILD_SHIP,
+        GameObjectAction.BUILD_CARBONHARVESTER,
+        GameObjectAction.BUILD_OXYGENHARVESTER,
+        GameObjectAction.BUILD_COLONIALVIPER,
+    ]
+
+
+def _shipcon_fac():
+    return {ShipClassification.HARVESTER: 2000, ShipClassification.VIPER: 1000}
+
+
 @dataclass(eq=False)
 class Shipyard(SpaceStation):
     counstructed_at: int = 0
 
-    SHIP_CONSTRUCTION_TIME: Dict[
-        ShipClassification, int
-    ] = None  # field(default_factory={
-    #     ShipClassification.HARVESTER: 2000,
-    #     ShipClassification.VIPER: 1000,
-    # })
+    SHIP_CONSTRUCTION_TIME: Dict[ShipClassification, int] = field(
+        default_factory=_shipcon_fac
+    )
 
     construction_time: int = 1500  # 2000 ms = 2 sec;
-    actions: List[GameObjectAction] = None  # field(default_factory=[
-    #     GameObjectAction.BUILD_SHIP,
-    #     GameObjectAction.BUILD_CARBONHARVESTER,
-    #     GameObjectAction.BUILD_OXYGENHARVESTER,
-    #     GameObjectAction.BUILD_COLONIALVIPER,
-    # ])
+    actions: List[GameObjectAction] = field(default_factory=_action_fac)
     ship_construction: Dict[Ship, int] = None
 
     constructed: bool = False

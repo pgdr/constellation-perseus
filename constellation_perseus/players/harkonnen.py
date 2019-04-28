@@ -103,11 +103,8 @@ class Harkonnen(Player):
         print("HARKONNEN INIT")
         yard = self.yard
         hvs = self.harvesters
-        if not yard:
+        if not yard or not yard.is_under_construction():
             self.build_shipyard()
-            return
-
-        if yard and not yard.is_under_construction():
             return
 
         if not hvs:
@@ -163,5 +160,11 @@ class Harkonnen(Player):
     def build_shipyard(self):
         from constellation_perseus import Shipyard, Game
 
-        yard = Shipyard(self.basepos, self.hq, self)
-        Game.instance.add(yard)
+        self.yard = Shipyard(self.basepos, self.hq, self)
+        Game.instance.add(self.yard)
+
+    def __str__(self):
+        return "Harkonnen"
+
+    def __repr__(self):
+        return "Harkonnen"

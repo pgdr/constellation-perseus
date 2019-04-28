@@ -13,7 +13,7 @@ from typing import Dict, List
 from .ship import Ship
 from .shipclassification import ShipClassification
 
-from .. import Allotropes, Allotrope, Position, GameObjectState
+from .. import Allotropes, Allotrope, GameObjectState
 
 from .. import Gun, ViperMissile, KineticEnergyWeapon
 

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from typing import Dict, List
 
@@ -17,9 +17,9 @@ from .shipclassification import ShipClassification
 class Ship(GameObject):
     classification: ShipClassification = None
     cooldowntime: int = None
-    actions: List[GameObjectAction] = None
-    price: Dict[Allotrope, int] = None
-    guns: List[Gun] = None
+    actions: List[GameObjectAction] = field(default_factory=list)
+    price: Dict[Allotrope, int] = field(default_factory=dict)
+    guns: List[Gun] = field(default_factory=list)
     name: str = None
     owner: Player = None
 
@@ -28,22 +28,26 @@ class Ship(GameObject):
     lastjumptime: int = -10 ** 10
 
     def price_of(self, a: Allotrope):
-        return price.get(a, 0)
+        return self.price.get(a, 0)
 
     def canjump(self):
         return self.cooldowntime == 0
 
     def remaining_cooldowntime(self):
+        from constellation_perseus import Game
+
         if self.lastjumptime == -10 ** 10:
             return 0
-        now = Game.now()
+        now = Game.instance.now()
         return max(0, now - self.lastjumptime)
 
     def jumpto(self, pos: Position):
+        from constellation_perseus import Game
+
         if not self.canjump():
             return False
-        Game.instance().assign_position(self, pos)
-        self.lastjumptime = Game.now()
+        Game.instance.assign_position(self, pos)
+        self.lastjumptime = Game.instance.now()
         return True
 
     def __str__(self):
@@ -58,10 +62,10 @@ class Ship(GameObject):
 
     def destroy(self):
         if self.destructor():
-            setState(GameObjectState.DESTROYED)
+            self.state = GameObjectState.DESTROYED
 
     def destroyed(self):
-        self.state == GameObjectState.DESTROYED
+        return self.state == GameObjectState.DESTROYED
 
     def idle(self):
         return self.state == GameObjectState.IDLE

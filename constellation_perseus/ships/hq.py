@@ -27,38 +27,38 @@ class Hq(Ship):
     )  # The assets owned by this hq.
     cooldown_time: int = 10 * 1000  # 10 seconds
 
-    async def buy(self, ship: Ship):
-        lock = asyncio.Lock()
+    def buy(self, ship: Ship):
+        # lock = asyncio.Lock()
 
-        async with lock:
-            assert ship.owner == self.owner(), "Owner of ship is not owner of hq buying"
+        # async with lock:
+        assert ship.owner == self.owner, "Owner of ship is not owner of hq buying"
 
-            if not self.can_afford(ship):
-                return False
-            for a, p in ship.price.items():
-                self.withdraw_asset(a, p)
-            return True
+        if not self.can_afford(ship):
+            return False
+        for a, p in ship.price.items():
+            self.withdraw_asset(a, p)
+        return True
 
     def can_afford(self, ship: Ship):
-        lock = asyncio.Lock()
+        # lock = asyncio.Lock()
 
-        with lock:
-            for a, p in ship.price.items():
-                if p > assets[a]:
-                    return False
+        # with lock:
+        for a, p in ship.price.items():
+            if p > self.assets[a]:
+                return False
         return True
 
     def withdraw_asset(self, allotrope: Allotrope, amount: int) -> bool:
         if amount <= 0:
             return True
-        lock = asyncio.Lock()
+        # lock = asyncio.Lock()
 
-        with lock:
-            cash = assets.get(allotrope, 0)
-            if cash < amount:
-                return False
-            assets[allotrope] = cash - amount
-            return True
+        # with lock:
+        cash = self.assets.get(allotrope, 0)
+        if cash < amount:
+            return False
+        self.assets[allotrope] = cash - amount
+        return True
 
     def get_asset(self, allotrope: Allotrope):
         return self.assets.get(allotrope, 0)
@@ -80,9 +80,9 @@ class Hq(Ship):
         self.add_allotrope(allotrope, mined)
 
     def add_allotrope(self, allotrope: Allotrope, amount: int):
-        lock = asyncio.Lock()
-        with lock:
-            self.assets[allotrope] = self.get_asset(allotrope) + amount
+        # lock = asyncio.Lock()
+        # with lock:
+        self.assets[allotrope] = self.get_asset(allotrope) + amount
 
     def get_allotrope(self, allotrope: Allotrope) -> int:
         return self.get_asset(allotrope)

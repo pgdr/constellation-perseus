@@ -1,3 +1,5 @@
 from .harvester_classification import HarvesterClassification
 
 from .harvester import Harvester
+from .basic_carbon_harvester import BasicCarbonHarvester
+from .basic_oxygen_harvester import BasicOxygenHarvester

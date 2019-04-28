@@ -42,7 +42,7 @@ class GameObject:
         """
         pass
 
-    def is_action_possible(action: GameObjectAction):
+    def is_action_possible(self, action: GameObjectAction):
         """
           @return boolean whether action is possible or not
         """

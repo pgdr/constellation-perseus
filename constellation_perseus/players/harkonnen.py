@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from .player import Player
 from .. import Star, Stars, Position
 from .. import Ship
-from ..ships.harvesters import Harvester
+from ..ships.harvesters import Harvester, BasicCarbonHarvester, BasicOxygenHarvester
 from ..stations import Shipyard
 
 
@@ -54,19 +54,19 @@ class Harkonnen(Player):
         from constellation_perseus import Game
 
         print("HARKONNEN KILL")
-        enemy = Game.instance.getClosestEnemyShip(self.hq)
+        enemy = Game.instance.get_closest_enemy_ship(self.hq)
         if not enemy:
             return
         enemy_pos = Game.instance.get_position(enemy)
 
         non_ready = 0
-        for ship in ships:
+        for ship in self.ships:
             if not ship.ready():
                 non_ready += 1
         if non_ready > 0:
             return  #  wait until we're all ready and then KILL!
 
-        for s in ships:
+        for s in self.ships:
             s.jumpto(enemy_pos)
 
     def _hvs_logistic(self, idx, to_star):
@@ -82,8 +82,8 @@ class Harkonnen(Player):
 
     def develop_phase(self):
         print("HARKONNEN DEVELOP")
-        self._hvs_logistic(0, Star.ATLAS)
-        self._hvs_logistic(1, Star.ALCYONE)
+        self._hvs_logistic(0, Stars.ATLAS)
+        self._hvs_logistic(1, Stars.ALCYONE)
 
         if len(harvesters) == 2:
             self.build_carbon_miner()
@@ -93,33 +93,36 @@ class Harkonnen(Player):
             self.build_oxygen_miner()
             return
 
-        self._hvs_logistic(2, Star.ATLAS)
-        self._hvs_logistic(3, Star.ALCYONE)
+        self._hvs_logistic(2, Stars.ATLAS)
+        self._hvs_logistic(3, Stars.ALCYONE)
 
         if len(ships) < 20:
             self.build_viper()
 
     def init_phase(self):
         print("HARKONNEN INIT")
-        yard = self.yard
         hvs = self.harvesters
-        if not yard or not yard.is_under_construction():
+        if not self.yard:
             self.build_shipyard()
             return
 
+        if self.yard.is_under_construction():
+            print("Harkonnen waiting ...")
+            return
+
         if not hvs:
-            self.buildCarbonMiner()
+            self.build_carbonminer()
             print("HARKONNEN CARBON")
             return
 
-        if self._hvs_logistic(0, Star.ATLAS):
+        if self._hvs_logistic(0, Stars.ATLAS):
             return
 
         if len(hvs) == 1:
             self.build_oxygenminer()
             return
 
-        if self._hvs_logistic(1, Star.ALCYONE):
+        if self._hvs_logistic(1, Stars.ALCYONE):
             return
 
         if len(self.ships) <= 5:
@@ -129,7 +132,7 @@ class Harkonnen(Player):
     def build_viper(self):
         from constellation_perseus import Game
 
-        v = ColonialViper(Game.instance.get_position(Star.MAIA), self)
+        v = ColonialViper(Game.instance.get_position(Stars.MAIA), self)
         if Game.instance.buy(v, self):
             print("HARKONNEN BUILDING VIPER!")
             self.yard.construct_ship(v, Game.now())
@@ -154,7 +157,7 @@ class Harkonnen(Player):
 
         cm = BasicCarbonHarvester(self.basepos, self.hq, self)
         if Game.instance.buy(cm, self):
-            self.yard.construct_ship(cm, Game.now())
+            self.yard.construct_ship(cm, Game.instance.now())
             self.harvesters.append(cm)
 
     def build_shipyard(self):

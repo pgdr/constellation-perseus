@@ -6,10 +6,11 @@
 """
 
 from typing import List, Dict
-import asyncio
+
+# import asyncio
 import time
 
-from . import Player, HumanPlayer, Harkonnen, Star, Stars, Hq, Shipyard
+from . import Player, HumanPlayer, Harkonnen, Stars, Hq, Shipyard
 
 from .celestials import Celestial
 from .ships import Ship, ColonialViper
@@ -87,7 +88,7 @@ class Game:
         harkonnen_hq.set_star(Stars.PLEIONE)
 
     def get_human_player(self):
-        return players.get(0)
+        return self.players[0]
 
     def buy(self, ship: Ship, player: Player):
         """ Returns true if player can afford to buy ship AND the money is withdrawn
@@ -110,10 +111,10 @@ class Game:
         Returns None if ship not ready to jump
         """
         if not ship.isReadyToJump():
-            return
+            return None
 
-        ship.jumpto(obj_to_pos[cel])
-        return self.assign_position(ship, obj_to_pos[cel])
+        ship.jumpto(self.obj_to_pos[cel])
+        return self.assign_position(ship, self.obj_to_pos[cel])
 
     def assign_position(self, obj: GameObject, pos: Position) -> Position:
         """Finds the nearest uninhabitated position in space and puts obj there.  This
@@ -130,14 +131,18 @@ class Game:
         # async with lock:
         if obj in self.obj_to_pos:
             oldpos = self.obj_to_pos[obj]
-            if oldpos == position:
-                return position  # nothing to do
-            obj_to_pos[obj] = pos
-            pos_to_obj[oldpos] = None
-            pos_to_obj[pos] = obj
+            if oldpos == pos:
+                return None  # nothing to do
+            self.obj_to_pos[obj] = pos
+            self.pos_to_obj[oldpos] = None
+            self.pos_to_obj[pos] = obj
+        return pos
 
     def get_position(self, obj: GameObject) -> Position:
         return self.obj_to_pos.get(obj)
+
+    def get_closes_enemy_ship(self, pos: Position):
+        return None  # TODO implement
 
     # @singledispatch
     def add(self, obj: GameObject, pos: Position = None):
@@ -155,24 +160,24 @@ class Game:
         else:
             self.assign_position(obj, pos)
 
-    async def get(self, target: Position, range_: float) -> GameObject:
+    def get(self, target: Position, range_: float) -> GameObject:
         """Returns the object closest to given position. Returns null if no object is
         closer than range.
 
         """
 
-        async with asyncio.Lock():
-            opt_dist = 10 ** 10
-            opt_obj = None
-            opt_pos = None
-            for pos, obj in self.pos_to_obj.items:
-                dist = target.distance(pos)
-                if dist < optDist:
-                    opt_obj = obj
-                    opt_pos = pos
-                    opt_dist = dist
+        # async with asyncio.Lock():
+        opt_dist = 10 ** 10
+        opt_obj = None
+        opt_pos = None
+        for pos, obj in self.pos_to_obj.items:
+            dist = target.distance(pos)
+            if dist < opt_dist:
+                opt_obj = obj
+                opt_pos = pos
+                opt_dist = dist
 
-        if optDist > range_:
+        if opt_dist > range_:
             return None
 
         return opt_obj
@@ -202,10 +207,10 @@ class Game:
             return header + "\n\t".join([str(obj) for obj in lst])
 
         return (
-            ntjoin(players, "Players:")
-            + ntjoin(celestials, "Celestials:")
-            + ntjoin(stations, "Stations:")
-            + ntjoin(ships, "Ships:")
+            ntjoin(self.players, "Players:")
+            + ntjoin(self.celestials, "Celestials:")
+            + ntjoin(self.stations, "Stations:")
+            + ntjoin(self.ships, "Ships:")
         )
 
     def set_contributors(self):

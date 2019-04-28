@@ -1,29 +1,30 @@
 from typing import List
+from dataclasses import dataclass, field
 
-from ... import GameObjectAction
+from ... import GameObjectState, GameObjectAction
 
 from .. import Ship
 from .. import ShipClassification
 from ... import Star
 
-# from .. import Hq
 from .harvester_classification import HarvesterClassification
 
 
+@dataclass(eq=False)
 class Harvester(Ship):
-    star: Star  # The star it is connected to, might be None
-    harvester_classification: HarvesterClassification
+    star: Star = None  # The star it is connected to, might be None
+    harvester_classification: HarvesterClassification = None
     ship_classification: ShipClassification = ShipClassification.HARVESTER
-    amount: int
-    capacity: int
-    default_hq: object  # TODO Hq
+    amount: int = 0
+    capacity: int = 1000
+    default_hq: object = None  # TODO Hq
     at_hq: bool = False
-    actions = List[GameObjectAction]
+    actions: List[GameObjectAction] = field(default_factory=list)
 
     def percentage(self):
-        if self.isfull():
+        if self.is_full():
             return 100
-        if self.isempty():
+        if self.is_empty():
             return 0
         return int((100.0 * self.amount) / self.capacity)
 
@@ -38,7 +39,7 @@ class Harvester(Ship):
         self.amount = 0
         return amount
 
-    def set_star(star: Star):
+    def set_star(self, star: Star):
         if not star:
             self.star = None
             return True
@@ -46,7 +47,7 @@ class Harvester(Ship):
         if star == self.star:
             return True
 
-        if not self.ready():
+        if not self.isready():
             return False
 
         self.jumpto(star.position)
@@ -56,20 +57,24 @@ class Harvester(Ship):
 
     def tick(self, time: int):
         if self.at_hq and not self.isempty():
-            default_hq.empty(self)
+            self.default_hq.empty(self)
 
-        if star:
-            if star.classification.allotrope == harvester_classification.allotrope:
-                amount += harvester_classification.speed
+        if self.star:
+            if (
+                self.star.classification.allotrope
+                == self.harvester_classification.allotrope
+            ):
+                self.amount += self.harvester_classification.speed
             if self.amount > self.capacity:
                 self.amount = self.capacity
+        print(f"Harvester fill level = {self.amount}")
 
-        def is_harvesting(self):
-            return self.state == GameObjectState.HARVESTING
+    def is_harvesting(self):
+        return self.state == GameObjectState.HARVESTING
 
-        def send_home(s: Hq):
-            if self.jumpto(s.position):
-                at_hq = True
-                star = None
-                return True
-            return False
+    def send_home(self, s):
+        if self.jumpto(s.position):
+            self.at_hq = True
+            self.star = None
+            return True
+        return False

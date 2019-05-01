@@ -14,7 +14,7 @@ from ... import Allotropes, Allotrope
 @dataclass
 class HarvesterClassification:
 
-    harvestSpeed: float
+    speed: float
     allotrope: Allotrope
 
     def __str__(self):

@@ -30,9 +30,6 @@ class Hq(Ship):
     cooldown_time: int = 10 * 1000  # 10 seconds
 
     def buy(self, ship: Ship):
-        # lock = asyncio.Lock()
-
-        # async with lock:
         assert (
             ship.owner == self.owner
         ), f"Owner of ship {ship.owner} is not owner of hq buying {self.owner}"
@@ -44,9 +41,6 @@ class Hq(Ship):
         return True
 
     def can_afford(self, ship: Ship):
-        # lock = asyncio.Lock()
-
-        # with lock:
         for a, p in ship.price.items():
             if p > self.assets[a]:
                 return False

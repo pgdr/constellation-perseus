@@ -29,7 +29,7 @@ def _price_fac():
 @dataclass(frozen=False, eq=False)
 class ColonialViper(Ship):
     cooldowntime: int = 3500  # 1.5 sec
-    price: Dict[Allotrope, int] = dataclasses.field(default=_price_fac)
+    price: Dict[Allotrope, int] = dataclasses.field(default_factory=_price_fac)
     name: str = "Mark I Colonial Viper"
     classification: str = ShipClassification.VIPER
     guns: List[Gun] = dataclasses.field(default_factory=_gun_fac)

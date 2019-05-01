@@ -60,9 +60,9 @@ class Harvester(Ship):
             self.default_hq.empty(self)
 
         if self.star:
-            star_all = self.star.sc.allotrope
-            harv_all = self.harvester_classification.allotrope
-            harv_speed = self.harvester_classification.speed
+            star_all = self.star.sc.value.allotrope  # TODO fixme no value
+            harv_all = self.harvester_classification.value.allotrope
+            harv_speed = self.harvester_classification.value.speed
             if star_all == harv_all:
                 self.amount += harv_speed
             if self.amount > self.capacity:

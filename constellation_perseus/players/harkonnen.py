@@ -136,7 +136,7 @@ class Harkonnen(Player):
         v = ColonialViper(Game.instance.get_position(Stars.MAIA), owner=self)
         if Game.instance.buy(v, self):
             print("HARKONNEN BUILDING VIPER!")
-            self.yard.construct_ship(v, Game.now())
+            self.yard.construct_ship(v, Game.instance.now())
             ships.append(v)
         else:
             print("HARKONNEN TO POOR FOR VIPER :(")
@@ -148,7 +148,7 @@ class Harkonnen(Player):
 
         cm = BasicOxygenHarvester(self.basepos, self.hq, owner=self)
         if Game.instance.buy(cm, self):
-            self.yard.construct_ship(cm, Game.now())
+            self.yard.construct_ship(cm, Game.instance.now())
             self.harvesters.append(cm)
 
     def build_carbonminer(self):

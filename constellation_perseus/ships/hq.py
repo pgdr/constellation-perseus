@@ -7,13 +7,11 @@ A HqShip is the/a head quarter of a player.
 from dataclasses import dataclass, field
 from typing import List, Dict
 
-from .ship import Ship, ShipClassification
-from .. import Allotrope, Allotropes, Star, Position, GameObject, Player
+from .ship import Ship
+from .. import Allotrope, Allotropes, Star
 from .harvesters import Harvester
 
-
-def _asset_fac():
-    return {Allotropes.OXYGEN: 1000, Allotropes.CARBON: 800, Allotropes.SELENIUM: 7000}
+from .. import GameObjectState
 
 
 @dataclass(eq=False)
@@ -23,7 +21,11 @@ class Hq(Ship):
         default_factory=list
     )  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
     assets: Dict[Allotrope, int] = field(
-        default_factory=_asset_fac
+        default_factory=lambda: {
+            Allotropes.OXYGEN: 1000,
+            Allotropes.CARBON: 800,
+            Allotropes.SELENIUM: 7000,
+        }
     )  # The assets owned by this hq.
     cooldown_time: int = 10 * 1000  # 10 seconds
 
@@ -31,7 +33,9 @@ class Hq(Ship):
         # lock = asyncio.Lock()
 
         # async with lock:
-        assert ship.owner == self.owner, "Owner of ship is not owner of hq buying"
+        assert (
+            ship.owner == self.owner
+        ), f"Owner of ship {ship.owner} is not owner of hq buying {self.owner}"
 
         if not self.can_afford(ship):
             return False
@@ -63,7 +67,7 @@ class Hq(Ship):
     def get_asset(self, allotrope: Allotrope):
         return self.assets.get(allotrope, 0)
 
-    def set_star(self, star: Star):
+    def set_star(self, star: Star, now: int):
         """Sets the star this hq is assigned to, updates position to reflect that of the
         star
 
@@ -72,7 +76,7 @@ class Hq(Ship):
         if not star:
             self.star = None
             return True
-        return self.jumpto(star.position)
+        return self.jumpto(star.position, now)
 
     def empty(self, harvester: Harvester):
         allotrope = harvester.classification.allotrope
@@ -96,14 +100,16 @@ class Hq(Ship):
         harvester.set_star(self.star)
         harvester.set_state(GameObjectState.HARVESTING)
 
-    def tick(self, time: int):
+    def tick(self, now: int):
         for harvester in self.harvesters:
-            if h.destroyed():
+            if harvester.destroyed():
                 pass  # TODO perform GC
-            elif h.harvesting():
+            elif harvester.harvesting():
                 harvested = harvester.reset()
                 allotrope = harvester.classification.allotrope
                 self.add_allotrope(allotrope, harvested)
 
     def __str__(self) -> str:
-        return "HQ, assets: " + str(self.assets)
+        hvs = len(self.harvesters)
+        ass = ", ".join([f"{k}:{v}" for k, v in self.assets.items()])
+        return f"🏰\tHQ ({self.owner.name}) — {hvs} harvesters,  assets: {ass}"

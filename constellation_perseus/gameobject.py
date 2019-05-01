@@ -6,23 +6,33 @@ Can be destroyed, and have a concept of time and position.
 
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Tuple, List
+
 from .position import Position
 from .gameobjectaction import GameObjectAction
+from .gameobjectstate import GameObjectState
 
 
 @dataclass(eq=False)
 class GameObject:
 
+    actions: Tuple[GameObjectAction] = tuple()
+    state: GameObjectState = GameObjectState.IDLE
+    listeners: List = field(default_factory=list)
+
     # position: Position  # Deprecated
 
-    def tick(self, time: int):
-        """Tick, time is the absolute game time, which might overflow. lol, not!
+    def tick(self, now: int):
+        """Tick, now is the absolute game time, which might overflow.
 
-        @param time the current time in millisecond, since game started.
+        @param now the current time in millisecond, since game started.
 
         """
-        pass
+
+    def assign_position(self, pos: Position, now: int):
+        for listener in self.listeners:
+            listener.dispatch(GameObjectState.JUMPING, {"position": pos})
 
     def get_damage(self):
         """Get the damage of this object. 1 means fully operational, 0 means fully
@@ -32,7 +42,6 @@ class GameObject:
         is destroyed.
 
         """
-        pass
 
     def get_possible_actions(self):
         """Get a list of possible actions the object can do.
@@ -40,13 +49,11 @@ class GameObject:
         @return list of possible actions
 
         """
-        pass
 
     def is_action_possible(self, action: GameObjectAction):
         """
           @return boolean whether action is possible or not
         """
-        pass
 
     def name(self) -> str:
         """Some identifier. Every object must provide some identifier
@@ -54,7 +61,6 @@ class GameObject:
         @return
 
         """
-        pass
 
     def owner(self):
         """Might return null, but if ship or station returns player
@@ -62,4 +68,3 @@ class GameObject:
         @return
 
         """
-        pass

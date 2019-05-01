@@ -12,11 +12,12 @@ from dataclasses import dataclass, field
 from .player import Player
 from .. import Star, Stars, Position
 from .. import Ship
+from .. import ColonialViper
 from ..ships.harvesters import Harvester, BasicCarbonHarvester, BasicOxygenHarvester
 from ..stations import Shipyard
 
 
-@dataclass
+@dataclass(eq=False)
 class Harkonnen(Player):
 
     yard: Shipyard = None
@@ -29,28 +30,28 @@ class Harkonnen(Player):
     THINK_TIME: int = 25
     INIT_TIME: int = 3000
 
-    def tick(self, time: int):
-        print(f"tick {time}")
-        if time < self.INIT_TIME:
+    def tick(self, now: int):
+        print(f"tick {now}")
+        if now < self.INIT_TIME:
             return
         if self.last_tick == -1:
-            self.last_tick = time
+            self.last_tick = now
             return
-        if self.last_tick + self.THINK_TIME > time:
+        if self.last_tick + self.THINK_TIME > now:
             return
-        self.last_tick = time
+        self.last_tick = now
 
         if len(self.ships) < 5:
-            self.init_phase()
+            self.init_phase(now)
             return
 
         if len(self.ships) <= 20:
-            self.develop_phase()
+            self.develop_phase(now)
             return
 
-        self.kill_phase()
+        self.kill_phase(now)
 
-    def kill_phase(self):
+    def kill_phase(self, now: int):
         from constellation_perseus import Game
 
         print("HARKONNEN KILL")
@@ -69,37 +70,37 @@ class Harkonnen(Player):
         for s in self.ships:
             s.jumpto(enemy_pos)
 
-    def _hvs_logistic(self, idx, to_star):
+    def _hvs_logistic(self, idx: int, to_star: Star, now: int):
         """ move hvs[idx] home if full, to star if empty, return [if action]"""
         hv = self.harvesters[idx]
         if hv.is_empty():
             hv.star = to_star
             return True
         elif hv.is_full():
-            hv.send_home(self.hq)
+            hv.send_home(hv.star or self.hq.star, now)
             return True
         return False
 
-    def develop_phase(self):
+    def develop_phase(self, now: int):
         print("HARKONNEN DEVELOP")
-        self._hvs_logistic(0, Stars.ATLAS)
-        self._hvs_logistic(1, Stars.ALCYONE)
+        self._hvs_logistic(idx=0, to_star=Stars.ATLAS, now=now)
+        self._hvs_logistic(idx=1, to_star=Stars.ALCYONE, now=now)
 
-        if len(harvesters) == 2:
+        if len(self.harvesters) == 2:
             self.build_carbon_miner()
             return
 
-        if len(harvesters) == 3:
+        if len(self.harvesters) == 3:
             self.build_oxygen_miner()
             return
 
-        self._hvs_logistic(2, Stars.ATLAS)
-        self._hvs_logistic(3, Stars.ALCYONE)
+        self._hvs_logistic(2, Stars.ATLAS, now=now)
+        self._hvs_logistic(3, Stars.ALCYONE, now=now)
 
-        if len(ships) < 20:
+        if len(self.ships) < 20:
             self.build_viper()
 
-    def init_phase(self):
+    def init_phase(self, now: int):
         print("HARKONNEN INIT")
         hvs = self.harvesters
         if not self.yard:
@@ -115,14 +116,14 @@ class Harkonnen(Player):
             print("HARKONNEN CARBON")
             return
 
-        if self._hvs_logistic(0, Stars.ATLAS):
+        if self._hvs_logistic(0, Stars.ATLAS, now):
             return
 
         if len(hvs) == 1:
             self.build_oxygenminer()
             return
 
-        if self._hvs_logistic(1, Stars.ALCYONE):
+        if self._hvs_logistic(1, Stars.ALCYONE, now):
             return
 
         if len(self.ships) <= 5:
@@ -132,7 +133,7 @@ class Harkonnen(Player):
     def build_viper(self):
         from constellation_perseus import Game
 
-        v = ColonialViper(Game.instance.get_position(Stars.MAIA), self)
+        v = ColonialViper(Game.instance.get_position(Stars.MAIA), owner=self)
         if Game.instance.buy(v, self):
             print("HARKONNEN BUILDING VIPER!")
             self.yard.construct_ship(v, Game.now())
@@ -145,7 +146,7 @@ class Harkonnen(Player):
 
         print("HARKONNEN builds oxygen miner.")
 
-        cm = BasicOxygenHarvester(self.basepos, self.hq, self)
+        cm = BasicOxygenHarvester(self.basepos, self.hq, owner=self)
         if Game.instance.buy(cm, self):
             self.yard.construct_ship(cm, Game.now())
             self.harvesters.append(cm)
@@ -155,16 +156,16 @@ class Harkonnen(Player):
 
         print("HARKONNEN builds carbon miner.")
 
-        cm = BasicCarbonHarvester(self.basepos, self.hq, self)
+        cm = BasicCarbonHarvester(self.basepos, self.hq, owner=self)
         if Game.instance.buy(cm, self):
             self.yard.construct_ship(cm, Game.instance.now())
             self.harvesters.append(cm)
 
     def build_shipyard(self):
-        from constellation_perseus import Shipyard, Game
+        from constellation_perseus import Game
 
-        self.yard = Shipyard(self.basepos, self.hq, self)
-        Game.instance.add(self.yard)
+        self.yard = Shipyard(default_hq=self.hq, owner=self)
+        Game.instance.add(self.yard, self.basepos)
 
     def __str__(self):
         return "Harkonnen"

@@ -1,18 +1,17 @@
 from dataclasses import dataclass, field
+from typing import List
 
 from constellation_perseus import Position
 from constellation_perseus import Allotrope
 from constellation_perseus import Message
 
 
-# from constellation_perseus import Hq
-
-
-@dataclass
+@dataclass(eq=False)
 class Player:
     name: str
-    hqs: list = None  # field(default_factory=[])  # TODO list[Hq]
-    inbox: list = None  # field(default_factory=[]) # TODO list[Message]
+    hqs: List["Hq"] = field(default_factory=list)
+    inbox: List[Message] = field(default_factory=list)
+    listeners: List = field(default_factory=list)
 
     @property
     def position(self) -> Position:

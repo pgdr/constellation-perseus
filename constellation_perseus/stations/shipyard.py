@@ -30,55 +30,56 @@ class Shipyard(SpaceStation):
 
     construction_time: int = 1500  # 2000 ms = 2 sec;
     actions: List[GameObjectAction] = field(default_factory=_action_fac)
-    ship_construction: Dict[Ship, int] = field(default_factory=dict)
+
+    ship_construction: Dict[Ship, int] = field(
+        default_factory=dict
+    )  # Currently building ... ship->time_of_construction
 
     constructed: bool = False
     name: str = "Shipyard"
 
-    def construct_ship(self, ship: Ship, time: int):
-        print(f"Constructing ship now: {(time / 1000)} sec")
-        self.ship_construction[ship] = time
+    def construct_ship(self, ship: Ship, now: int):
+        print(f"Constructing ship now: {(now / 1000)} sec")
+        self.ship_construction[ship] = now
 
     def deploy_ship(self, ship: Ship):
         from constellation_perseus import Game
 
-        Game.instance.add(ship)
-        self.ship_construction.remove(ship)
+        Game.instance.add(ship, pos_from=self)
+        del self.ship_construction[ship]
 
-    def tick(self, time: int):
-        # lock = game.lock()
-        # with lock:
+    def tick(self, now: int):
         if not self.constructed:
-            if self.constructed_at + self.construction_time <= time:
+            if self.constructed_at + self.construction_time <= now:
                 self.constructed = True
+            return
 
-        for s, t in self.ship_construction.items():
+        items = list(
+            self.ship_construction.items()
+        )  # due to `del ship_construction[s]`
+        for s, t in items:
             sc = s.classification
-            if sc not in self.SHIP_CONSTRUCTION_TIME:
-                continue
-            if self.SHIP_CONSTRUCTION_TIME[s] is None:
-                continue
-            tc = self.SHIP_CONSTRUCTION_TIME[sc]
-            if t + tc <= time:
-                self.ship_construction[s] = None
+            tc = self.SHIP_CONSTRUCTION_TIME.get(sc)
+
+            if tc is None:
+                raise ValueError(f"Invalid ship type {sc} for ship {s} in yard {self}")
+
+            if t + tc <= now:
+                print("DEPLOY!!!")
                 self.deploy_ship(s)
+            else:
+                print(f"\t\tWaiting for {sc} to be completed (in {(t+tc) - now} secs)")
 
     def is_under_construction(self):
         return not self.constructed
 
     def __str__(self):
+        pfx = f"🛫\tshipyard (station) {self.name}"
         if self.is_under_construction():
-            return f"{self.name} (under construction)"
-        if not self.ship_construction:
-            return f"{self.name} constructing ship {self.ship_construction}"
+            return f"{pfx} (under construction) (owner={self.owner.name})"
 
-        return self.name
+        cons = ", ".join([f"{k}:{v}" for k, v in self.ship_construction.items()])
 
-    # def to_message(self): -> Message:
-    #    return Message.internal(str(self))
-
-    def constructable_ships(self) -> List[Ship]:
-        return None
-
-    def constructable_spacestations(self) -> List[SpaceStation]:
-        return None
+        if cons:
+            return f"{pfx} constructing ship <!<{cons}>> (owner={self.owner.name})"
+        return f"{pfx} <idle> (owner={self.owner.name})"

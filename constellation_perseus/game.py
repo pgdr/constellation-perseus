@@ -6,8 +6,6 @@
 """
 
 from typing import List, Dict
-
-# import asyncio
 import time
 
 from . import Player, HumanPlayer, Harkonnen, Stars, Hq, Shipyard
@@ -42,6 +40,7 @@ class Game:
     instance: "Game"
 
     def __init__(self):
+        self._tick_id = 0
         self._setup()
         self.instance = self
         Game.instance = self
@@ -50,6 +49,7 @@ class Game:
         self.initialize_time = time.time()
         human = HumanPlayer()
         harkonnen = Harkonnen()
+
         self.players = [human, harkonnen]
 
         add = self.add
@@ -70,22 +70,23 @@ class Game:
         hqship = Hq(name="HeadQuarter", owner=human)
         human.add_hq(hqship)
         add(hqship, Stars.SOL.position)
-        hqship.set_star(Stars.SOL)
+        hqship.set_star(Stars.SOL, self.now())
 
-        yardpos = None  # self.get_position(hqship).add(Position(0, 50, 0))
-        yard = Shipyard(yardpos, hqship, human)
-        add(yard)
+        yard = Shipyard(default_hq=hqship, owner=human)
+        add(yard, pos=self.get_position(hqship) + Position(0, 50, 0))
 
         self.set_contributors()
 
-        for i in range(6):
-            v = ColonialViper(Stars.ELECTRA.position, human)
+        for _ in range(6):
+            v = ColonialViper(Stars.ELECTRA.position, owner=human)
             add(v, Stars.ELECTRA.position)
 
-        harkonnen_hq = Hq("Harkonnen", Stars.PLEIONE.position, harkonnen)
+        harkonnen_hq = Hq(
+            name="Harkonnen", star=Stars.PLEIONE.position, owner=harkonnen
+        )
         harkonnen.add_hq(harkonnen_hq)
         add(harkonnen_hq, Stars.PLEIONE.position)
-        harkonnen_hq.set_star(Stars.PLEIONE)
+        harkonnen_hq.set_star(Stars.PLEIONE, self.now())
 
     def get_human_player(self):
         return self.players[0]
@@ -110,10 +111,10 @@ class Game:
         """"
         Returns None if ship not ready to jump
         """
-        if not ship.isReadyToJump():
+        if not ship.canjump(self.now()):
             return None
 
-        ship.jumpto(self.obj_to_pos[cel])
+        ship.jumpto(self.obj_to_pos[cel], self.now())
         return self.assign_position(ship, self.obj_to_pos[cel])
 
     def assign_position(self, obj: GameObject, pos: Position) -> Position:
@@ -127,54 +128,67 @@ class Game:
             print(pos)
         except TypeError as e:
             print(" " * 30, e)
-        # lock = asyncio.Lock()
-        # async with lock:
+
         if obj in self.obj_to_pos:
             oldpos = self.obj_to_pos[obj]
             if oldpos == pos:
                 return None  # nothing to do
-            self.obj_to_pos[obj] = pos
-            self.pos_to_obj[oldpos] = None
-            self.pos_to_obj[pos] = obj
+            del self.pos_to_obj[oldpos]
+        self.obj_to_pos[obj] = pos
+        self.pos_to_obj[pos] = obj
         return pos
 
     def get_position(self, obj: GameObject) -> Position:
         return self.obj_to_pos.get(obj)
 
-    def get_closes_enemy_ship(self, pos: Position):
-        return None  # TODO implement
+    def get_closest_enemy_ship(self, pos: Position):
+        return None  #
 
-    # @singledispatch
-    def add(self, obj: GameObject, pos: Position = None):
-        if isinstance(obj, Ship):
-            self.ships.append(obj)
-        elif isinstance(obj, Celestial):
-            self.celestials.append(obj)
-        elif isinstance(obj, SpaceStation):
-            self.stations.append(obj)
+    def add(self, obj: GameObject, pos: Position = None, pos_from: GameObject = None):
         if pos is None:
-            assert (
-                "position" in obj.__dict__
-            ), f"Game.add needs position argument for type {type(obj)}."
-            self.assign_position(obj, obj.position)
+            pos = self.get_position(pos_from)
+        if pos is None:
+            try:
+                pos = pos_from.position
+            except:
+                pass
+        if pos is None and pos_from is not None:
+            raise ValueError(f"Unable to get position from {pos_from}.")
+        if pos is None:
+            try:
+                pos = obj.position
+            except AttributeError:
+                raise ValueError(f"Position cannot be None for Game.add({obj})")
+
+        regs = {
+            Ship: self.ships,
+            Celestial: self.celestials,
+            SpaceStation: self.stations,
+        }
+        for k, v in regs.items():
+            if isinstance(obj, k):
+                v.append(obj)
+                break
         else:
-            self.assign_position(obj, pos)
+            print(f"Game.add received unknown type {type(obj)}")
 
-    def get(self, target: Position, range_: float) -> GameObject:
-        """Returns the object closest to given position. Returns null if no object is
-        closer than range.
+        self.assign_position(obj, pos)
 
+    def get(self, target: Position, range_: float = 1.0) -> GameObject:
+        """Return the object closest to given position or None if no object is closer
+        than range.
         """
 
+        assert isinstance(
+            target, Position
+        ), f"wrong type on target, expected Position, was {type(target)}"
         # async with asyncio.Lock():
         opt_dist = 10 ** 10
         opt_obj = None
-        opt_pos = None
-        for pos, obj in self.pos_to_obj.items:
+        for pos, obj in self.pos_to_obj.items():
             dist = target.distance(pos)
             if dist < opt_dist:
                 opt_obj = obj
-                opt_pos = pos
                 opt_dist = dist
 
         if opt_dist > range_:
@@ -183,23 +197,26 @@ class Game:
         return opt_obj
 
     def tick(self):
+        self._tick_id += 1
+
         def T(o):
             o.tick(self.now())
 
         # TODO with asyncio.Lock():
-        print("\n" * 3)
-        print("===" * 10)
-        print("\n" * 3)
+        print("\n" * 2)
+        print(f"🕑 {self._tick_id} {round(self.now(),2)}".center(20).center(40, "="))
+        print("\n")
         print(f"{len(self.players)} players!")
         print(f"{len(self.celestials)} celestials")
         print(f"{len(self.stations)} stations")
         print(f"{len(self.ships)} ships")
 
+        for ship in self.ships:
+            print(ship, self.get_position(ship))
+        for station in self.stations:
+            print(station, self.get_position(station))
+
         for obj in self.players + self.celestials + self.stations + self.ships:
-            # try:
-            #     print(f'ticking {obj}')
-            # except Exception as e:
-            #     print(f'ticking type {type(obj)}')
             T(obj)
 
     def __str__(self):
@@ -221,3 +238,6 @@ class Game:
             time.sleep(1)
             print(f"{i}\ttick {time.time()}")
             self.tick()
+
+    def dispatch(self, *args, **kwargs):
+        pass

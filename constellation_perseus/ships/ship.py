@@ -15,13 +15,13 @@ from .shipclassification import ShipClassification
 
 @dataclass(eq=False)
 class Ship(GameObject):
+    owner: Player
     classification: ShipClassification = None
     cooldowntime: int = None
     actions: List[GameObjectAction] = field(default_factory=list)
     price: Dict[Allotrope, int] = field(default_factory=dict)
     guns: List[Gun] = field(default_factory=list)
     name: str = None
-    owner: Player = None
 
     damage: float = 1
     state: GameObjectState = GameObjectState.IDLE
@@ -30,31 +30,24 @@ class Ship(GameObject):
     def price_of(self, a: Allotrope):
         return self.price.get(a, 0)
 
-    def canjump(self):
-        return self.cooldowntime == 0
-
-    def remaining_cooldowntime(self):
-        from constellation_perseus import Game
-
+    def remaining_cooldowntime(self, now: int):
         if self.lastjumptime == -10 ** 10:
             return 0
-        now = Game.instance.now()
         return max(0, now - self.lastjumptime)
 
-    def jumpto(self, pos: Position):
-        from constellation_perseus import Game
+    def canjump(self, now: int):
+        return self.remaining_cooldowntime(now) <= 0
 
-        if not self.canjump():
+    def jumpto(self, pos: Position, now: int):
+        if not self.canjump(now):
             return False
-        Game.instance.assign_position(self, pos)
-        self.lastjumptime = Game.instance.now()
+        self.assign_position(pos, now)
+        self.lastjumptime = now
         return True
 
     def __str__(self):
-        s = "Ship " + str(self.classification)
+        s = f"✈\t{self.classification} (owner={self.owner.name})"
 
-        if not self.canjump():
-            s += f"(cooling down ... {self.remaining_cooldowntime() / 1000})"
         return s
 
     def destructor(self):

@@ -2,15 +2,13 @@
 
 """
 from dataclasses import dataclass
-from typing import List
-from .. import Position
 
 from .starclassification import StarClassifications, StarClassification
 from .celestial import Celestial
 from .. import Position
 
 
-@dataclass(frozen=True)
+@dataclass(eq=False)
 class Star(Celestial):
     sc: StarClassification = None
 

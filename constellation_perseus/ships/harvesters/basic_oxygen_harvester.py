@@ -20,4 +20,4 @@ class BasicOxygenHarvester(Harvester):
     harvester_classification: HarvesterClassification = HarvesterClassifications.OXYGEN_MINER
 
     def __str__(self):
-        return f"O-Harvester: {self.amount} Oxygen"
+        return f"⛴\tO-Harvester: {self.amount} Oxygen"

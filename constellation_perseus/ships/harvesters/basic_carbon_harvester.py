@@ -20,4 +20,4 @@ class BasicCarbonHarvester(Harvester):
     harvester_classification: HarvesterClassification = HarvesterClassifications.CARBON_COLLECTOR
 
     def __str__(self):
-        return f"C-Harvester: {self.amount} Carbon"
+        return f"⛴\tC-Harvester: {self.amount} Carbon"

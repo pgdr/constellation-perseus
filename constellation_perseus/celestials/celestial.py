@@ -18,21 +18,18 @@ diffuse coma and tail.
 """
 
 
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import Tuple
 
 from .. import GameObject, GameObjectState, GameObjectAction, Position
 
 
-@dataclass(frozen=True)
+@dataclass(eq=False)
 class Celestial(GameObject):
-    lumen: float
-    mass: float
-    radius: float
-
     name: str
+
+    lumen: float = 0
+    mass: float = 0
+    radius: float = 0
+
     position: Position = None
-
-    state: GameObjectState = None
-
-    # actions: List[GameObjectAction]

@@ -25,3 +25,5 @@ class GameObjectState(enum.Enum):
     ATTACKING = enum.auto()
 
     BUILDING = enum.auto()
+
+    JUMPING = enum.auto()

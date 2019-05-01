@@ -1,20 +1,17 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 from . import Ship
 from .. import Player, Position, GameObject, GameObjectAction
 
 
-@dataclass
+@dataclass(eq=False)
 class Fleet(GameObject):
 
-    actions: List[GameObjectAction]
+    ships: List[Ship] = field(default_factory=list)
 
-    ships: List[Ship]
-    position: Position
+    owner: Player = None
     name: str
-
-    owner: Player
 
     def _ready(self):
         return all([s.ready() for s in self.ships])

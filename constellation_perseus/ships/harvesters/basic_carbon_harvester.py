@@ -17,7 +17,7 @@ class BasicCarbonHarvester(Harvester):
 
     PRICE: Dict[Allotrope, int] = field(default_factory=_price_fac)
 
-    harvester_classification: HarvesterClassification = HarvesterClassifications.CARBON_COLLECTOR
+    harvester_classification: HarvesterClassification = HarvesterClassifications.CARBON_COLLECTOR.value
 
     def __str__(self):
         return f"⛴\tC-Harvester: {self.amount} Carbon"

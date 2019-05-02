@@ -17,7 +17,7 @@ class BasicOxygenHarvester(Harvester):
 
     PRICE: Dict[Allotrope, int] = field(default_factory=_price_fac)
 
-    harvester_classification: HarvesterClassification = HarvesterClassifications.OXYGEN_MINER
+    harvester_classification: HarvesterClassification = HarvesterClassifications.OXYGEN_MINER.value
 
     def __str__(self):
         return f"⛴\tO-Harvester: {self.amount} Oxygen"

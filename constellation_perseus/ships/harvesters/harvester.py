@@ -17,7 +17,7 @@ class Harvester(Ship):
     classification: ShipClassification = ShipClassification.HARVESTER
     amount: int = 0
     capacity: int = 1000
-    default_hq: object = None  # TODO Hq
+    default_hq: "Hq" = None  # TODO Hq
     at_hq: bool = False
     actions: List[GameObjectAction] = field(default_factory=list)
 
@@ -60,9 +60,9 @@ class Harvester(Ship):
             self.default_hq.empty(self)
 
         if self.star:
-            star_all = self.star.sc.value.allotrope  # TODO fixme no value
-            harv_all = self.harvester_classification.value.allotrope
-            harv_speed = self.harvester_classification.value.speed
+            star_all = self.star.sc.allotrope
+            harv_all = self.harvester_classification.allotrope
+            harv_speed = self.harvester_classification.speed
             if star_all == harv_all:
                 self.amount += harv_speed
             if self.amount > self.capacity:

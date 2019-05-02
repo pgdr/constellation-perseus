@@ -73,13 +73,11 @@ class Hq(Ship):
         return self.jumpto(star.position, now)
 
     def empty(self, harvester: Harvester):
-        allotrope = harvester.classification.allotrope
+        allotrope = harvester.harvester_classification.allotrope
         mined = harvester.reset()
         self.add_allotrope(allotrope, mined)
 
     def add_allotrope(self, allotrope: Allotrope, amount: int):
-        # lock = asyncio.Lock()
-        # with lock:
         self.assets[allotrope] = self.get_asset(allotrope) + amount
 
     def get_allotrope(self, allotrope: Allotrope) -> int:

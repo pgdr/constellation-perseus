@@ -67,10 +67,9 @@ class Game:
         add(Stars.STEROPE)
         add(Stars.ASTEROPE)
 
-        hqship = Hq(name="HeadQuarter", owner=human)
+        hqship = Hq(name="HeadQuarter", star=Stars.SOL, owner=human)
         human.add_hq(hqship)
-        add(hqship, Stars.SOL.position)
-        hqship.set_star(Stars.SOL, self.now())
+        add(hqship, pos_from=hqship.star)
 
         yard = Shipyard(default_hq=hqship, owner=human)
         add(yard, pos=self.get_position(hqship) + Position(0, 50, 0))
@@ -81,12 +80,9 @@ class Game:
             v = ColonialViper(Stars.ELECTRA.position, owner=human)
             add(v, Stars.ELECTRA.position)
 
-        harkonnen_hq = Hq(
-            name="Harkonnen", star=Stars.PLEIONE.position, owner=harkonnen
-        )
+        harkonnen_hq = Hq(name="Harkonnen", star=Stars.PLEIONE, owner=harkonnen)
         harkonnen.add_hq(harkonnen_hq)
-        add(harkonnen_hq, Stars.PLEIONE.position)
-        harkonnen_hq.set_star(Stars.PLEIONE, self.now())
+        add(harkonnen_hq, pos_from=harkonnen_hq.star)
 
     def get_human_player(self):
         return self.players[0]
@@ -211,10 +207,11 @@ class Game:
         print(f"{len(self.stations)} stations")
         print(f"{len(self.ships)} ships")
 
-        for ship in self.ships:
-            print(ship, self.get_position(ship))
         for station in self.stations:
             print(station, self.get_position(station))
+
+        for ship in self.ships:
+            print(ship, self.get_position(ship))
 
         for obj in self.players + self.celestials + self.stations + self.ships:
             T(obj)

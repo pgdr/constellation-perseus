@@ -16,6 +16,8 @@ from .stations import SpaceStation
 from .position import Position
 from .gameobject import GameObject
 
+import icontract
+
 
 class Soundsystem:
     @staticmethod
@@ -116,6 +118,8 @@ class Game:
         ship.jumpto(self.obj_to_pos[cel], self.now())
         return self.assign_position(ship, self.obj_to_pos[cel])
 
+    @icontract.require(lambda obj: isinstance(obj, GameObject))
+    @icontract.require(lambda pos: isinstance(pos, Position))
     def assign_position(self, obj: GameObject, pos: Position) -> Position:
         """Finds the nearest uninhabitated position in space and puts obj there.  This
         method calls setPosition on obj with the position it returns.  Returns
@@ -143,6 +147,7 @@ class Game:
     def get_closest_enemy_ship(self, pos: Position):
         return None  #
 
+    @icontract.ensure(lambda result: isinstance(result, Position))
     def add(self, obj: GameObject, pos: Position = None, pos_from: GameObject = None):
         if pos is None:
             pos = self.get_position(pos_from)
@@ -171,7 +176,7 @@ class Game:
         else:
             print(f"Game.add received unknown type {type(obj)}")
 
-        self.assign_position(obj, pos)
+        return self.assign_position(obj, pos)
 
     def get(self, target: Position, range_: float = 1.0) -> GameObject:
         """Return the object closest to given position or None if no object is closer

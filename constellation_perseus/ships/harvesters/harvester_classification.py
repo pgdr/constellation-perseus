@@ -22,10 +22,10 @@ class HarvesterClassification:
 
 
 class HarvesterClassifications(enum.Enum):
-    SPICE_SHIP = HarvesterClassification(2, Allotropes.SULFUR)  #  get it?
-    CARBON_COLLECTOR = HarvesterClassification(76, Allotropes.CARBON)
-    PHOSPORUS_MINER = HarvesterClassification(12, Allotropes.PHOSPORUS)
-    OXYGEN_MINER = HarvesterClassification(97, Allotropes.OXYGEN)
-    SULFUR_MINER = HarvesterClassification(16, Allotropes.SULFUR)
-    SELENIUM_MINER = HarvesterClassification(72, Allotropes.SELENIUM)
-    DYSON_SPHERE = HarvesterClassification(450, Allotropes.OXYGEN)
+    SPICE_SHIP = HarvesterClassification(2, Allotropes.SULFUR.value)  #  get it?
+    CARBON_COLLECTOR = HarvesterClassification(76, Allotropes.CARBON.value)
+    PHOSPORUS_MINER = HarvesterClassification(12, Allotropes.PHOSPORUS.value)
+    OXYGEN_MINER = HarvesterClassification(97, Allotropes.OXYGEN.value)
+    SULFUR_MINER = HarvesterClassification(16, Allotropes.SULFUR.value)
+    SELENIUM_MINER = HarvesterClassification(72, Allotropes.SELENIUM.value)
+    DYSON_SPHERE = HarvesterClassification(450, Allotropes.OXYGEN.value)

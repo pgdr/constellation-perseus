@@ -3,7 +3,7 @@ from typing import List
 import icontract
 
 from constellation_perseus import Position
-from constellation_perseus import Allotrope
+from constellation_perseus import Allotrope, Allotropes
 from constellation_perseus import Message
 
 
@@ -18,32 +18,26 @@ class Player:
     inbox: List[Message] = field(default_factory=list)
     listeners: List = field(default_factory=list)
 
-    @property
-    def position(self) -> Position:
-        if hqs:
-            return hqs[0].position
-        return Position.ORIGIN
-
     def tick(self, time: int):
         pass
 
     def get_total(self, allotrope: Allotrope) -> int:
-        return sum([hq.allotrope(allotrope) for hq in self.hqs])
+        return sum([hq.get_asset(allotrope) for hq in self.hqs])
 
     def get_total_oxygen(self):
-        return self.get_total(Allotrope.OXYGEN)
+        return self.get_total(Allotropes.OXYGEN.value)
 
     def get_total_carbon(self):
-        return self.get_total(Allotrope.CARBON)
+        return self.get_total(Allotropes.CARBON.value)
 
     def get_total_phosphorus(self):
-        return self.get_total(Allotrope.PHOSPHORUS)
+        return self.get_total(Allotropes.PHOSPHORUS.value)
 
     def get_total_sulfur(self):
-        return self.get_total(Allotrope.SULFUR)
+        return self.get_total(Allotropes.SULFUR.value)
 
     def get_total_selenium(self):
-        return self.get_total(Allotrope.SELENIUM)
+        return self.get_total(Allotropes.SELENIUM.value)
 
     def send_message(self, message: Message):
         self.inbox.append(message)

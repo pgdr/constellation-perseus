@@ -3,7 +3,7 @@ from .color import Color
 import enum
 
 
-@dataclass
+@dataclass(frozen=True)
 class Allotrope:
     name: str
     abbr: str

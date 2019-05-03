@@ -6,6 +6,7 @@ A HqShip is the/a head quarter of a player.
 
 from dataclasses import dataclass, field
 from typing import List, Dict
+import icontract
 
 from .ship import Ship
 from .. import Allotrope, Allotropes, Star
@@ -17,19 +18,24 @@ from .shipclassification import ShipClassification
 
 @dataclass(eq=False)
 class Hq(Ship):
-    star: Star = None  # This is the star the HqShip is orbiting. Might be None.
+
+    # This is the star the HqShip is orbiting. Might be None.
+    star: Star = None
+
     classification: ShipClassification = ShipClassification.HQ
 
-    harvesters: List[Harvester] = field(
-        default_factory=list
-    )  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.
+    # all harvesters belonging to this Hq
+    harvesters: List[Harvester] = field(default_factory=list)
+
+    # The assets (allotropes) owned by this hq.
     assets: Dict[Allotrope, int] = field(
         default_factory=lambda: {
             Allotropes.OXYGEN: 1000,
             Allotropes.CARBON: 800,
             Allotropes.SELENIUM: 7000,
         }
-    )  # The assets owned by this hq.
+    )
+
     cooldown_time: int = 10 * 1000  # 10 seconds
 
     def buy(self, ship: Ship):
@@ -49,21 +55,24 @@ class Hq(Ship):
                 return False
         return True
 
+    @icontract.require(lambda allotrope: isinstance(allotrope, Allotrope))
+    @icontract.require(lambda amount: isinstance(amount, int))
+    @icontract.require(lambda amount: amount >= 0)
     def withdraw_asset(self, allotrope: Allotrope, amount: int) -> bool:
         if amount <= 0:
             return True
-        # lock = asyncio.Lock()
 
-        # with lock:
         cash = self.assets.get(allotrope, 0)
         if cash < amount:
             return False
         self.assets[allotrope] = cash - amount
         return True
 
+    @icontract.require(lambda allotrope: isinstance(allotrope, Allotrope))
     def get_asset(self, allotrope: Allotrope):
         return self.assets.get(allotrope, 0)
 
+    @icontract.require(lambda star: star is None or isinstance(star, Celestial))
     def set_star(self, star: Star, now: int):
         """Sets the star this hq is assigned to, updates position to reflect that of the
         star
@@ -75,16 +84,19 @@ class Hq(Ship):
             return True
         return self.jumpto(star.position, now)
 
+    @icontract.require(lambda harvester: isinstance(harvester, Harvester))
+    @icontract.require(lambda harvester: harvester.amount >= 0)
+    @icontract.ensure(lambda harvester: harvester.amount == 0)
     def empty(self, harvester: Harvester):
         allotrope = harvester.harvester_classification.allotrope
         mined = harvester.reset()
         self.add_allotrope(allotrope, mined)
 
+    @icontract.require(lambda amount: amount >= 0)
+    @icontract.require(lambda amount: isinstance(amount, int))
+    @icontract.require(lambda allotrope: isinstance(allotrope, Allotrope))
     def add_allotrope(self, allotrope: Allotrope, amount: int):
         self.assets[allotrope] = self.get_asset(allotrope) + amount
-
-    def get_allotrope(self, allotrope: Allotrope) -> int:
-        return self.get_asset(allotrope)
 
     def add_harvester(self, harvester: Harvester):
         """Adds a harvester to this hq's internal harvesters, sets star of harvester to

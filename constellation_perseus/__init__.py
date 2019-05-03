@@ -26,6 +26,7 @@ from .ships import ColonialViper
 from .players.harkonnen import Harkonnen
 
 from .ships import Hq
+from .ships.harvesters import *
 
 from .stations import SpaceStation, Shipyard
 

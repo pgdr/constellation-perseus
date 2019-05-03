@@ -23,29 +23,32 @@ class Soundsystem:
         pass
 
 
+from dataclasses import dataclass, field
+
+
+@dataclass(eq=False, frozen=False)
 class Game:
-    initialize_time: int
-    players: List[Player] = []
-    celestials: List[Celestial] = []
-    ships: List[Ship] = []
-    stations: List[SpaceStation] = []
-    contributors: List[str] = []
+    instance: "Game" = None
+
+    initialize_time: int = time.time()
+    players: List[Player] = field(default_factory=list)
+    celestials: List[Celestial] = field(default_factory=list)
+    ships: List[Ship] = field(default_factory=list)
+    stations: List[SpaceStation] = field(default_factory=list)
+    contributors: List[str] = field(default_factory=list)
     soundsystem: Soundsystem = Soundsystem.get_sound_system()
 
-    pos_to_obj: Dict[Position, GameObject] = {}
-    obj_to_pos: Dict[GameObject, Position] = {}
+    pos_to_obj: Dict[Position, GameObject] = field(default_factory=dict)
+    obj_to_pos: Dict[GameObject, Position] = field(default_factory=dict)
 
     is_instantiated: bool = False
+    _tick_id: int = 0
 
-    instance: "Game"
-
-    def __init__(self):
-        self._tick_id = 0
-        self._setup()
+    def setup(self):
+        if self.instance:
+            raise RuntimeError("Can only instantiate game once")
         self.instance = self
         Game.instance = self
-
-    def _setup(self):
         self.initialize_time = time.time()
         human = HumanPlayer()
         harkonnen = Harkonnen()
@@ -231,6 +234,9 @@ class Game:
         self.contributors = ["Jonas Grønås Drange", "Pål Grønås Drange"]
 
     def run(self):
+        if not self.instance:
+            self.setup()
+
         for i in range(100):
             time.sleep(1)
             print(f"{i}\ttick {time.time()}")

@@ -1,11 +1,16 @@
 from dataclasses import dataclass, field
 from typing import List
+import icontract
 
 from constellation_perseus import Position
 from constellation_perseus import Allotrope
 from constellation_perseus import Message
 
 
+@icontract.invariant(lambda self: isinstance(self.name, str))
+@icontract.invariant(lambda self: isinstance(self.hqs, list))
+@icontract.invariant(lambda self: isinstance(self.inbox, list))
+@icontract.invariant(lambda self: isinstance(self.listeners, list))
 @dataclass(eq=False)
 class Player:
     name: str

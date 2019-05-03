@@ -3,7 +3,12 @@ from dataclasses import dataclass
 from .. import GameObject, Player
 from ..ships import Hq
 
+import icontract
 
+
+@icontract.invariant(lambda self: isinstance(self.owner, Player))
+@icontract.invariant(lambda self: isinstance(self.default_hq, Hq))
+@icontract.invariant(lambda self: isinstance(self.name, str))
 @dataclass(eq=False)
 class SpaceStation(GameObject):
     owner: Player

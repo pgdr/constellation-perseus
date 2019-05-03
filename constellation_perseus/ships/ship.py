@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 
 from typing import Dict, List
 
+import icontract
+
 from .. import GameObject
 from .. import GameObjectState
 from .. import GameObjectAction
@@ -13,11 +15,14 @@ from .. import Gun
 from .shipclassification import ShipClassification
 
 
+@icontract.invariant(lambda self: self.owner is not None)
+@icontract.invariant(lambda self: isinstance(self.owner, Player))
+@icontract.invariant(lambda self: isinstance(self.classification, ShipClassification))
 @dataclass(eq=False)
 class Ship(GameObject):
     owner: Player
     classification: ShipClassification = None
-    cooldowntime: int = None
+    cooldowntime: int = 0
     actions: List[GameObjectAction] = field(default_factory=list)
     price: Dict[Allotrope, int] = field(default_factory=dict)
     guns: List[Gun] = field(default_factory=list)
@@ -35,6 +40,7 @@ class Ship(GameObject):
             return 0
         return max(0, now - self.lastjumptime)
 
+    @icontract.require(lambda now: now > 0)
     def canjump(self, now: int):
         return self.remaining_cooldowntime(now) <= 0
 

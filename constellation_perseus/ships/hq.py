@@ -12,11 +12,14 @@ from .. import Allotrope, Allotropes, Star
 from .harvesters import Harvester
 
 from .. import GameObjectState
+from .shipclassification import ShipClassification
 
 
 @dataclass(eq=False)
 class Hq(Ship):
     star: Star = None  # This is the star the HqShip is orbiting. Might be None.
+    classification: ShipClassification = ShipClassification.HQ
+
     harvesters: List[Harvester] = field(
         default_factory=list
     )  # all harvesters this Hq operates. Note that this is not the  same as all the harvesters a player has.

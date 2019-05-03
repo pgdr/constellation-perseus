@@ -1,5 +1,6 @@
 from typing import List, Dict
 from dataclasses import dataclass, field
+import icontract
 
 from .spacestation import SpaceStation
 from .. import ShipClassification, GameObjectAction
@@ -20,6 +21,8 @@ def _shipcon_fac():
     return {ShipClassification.HARVESTER: 2000, ShipClassification.VIPER: 1000}
 
 
+@icontract.invariant(lambda self: isinstance(self.construction_time, int))
+@icontract.invariant(lambda self: isinstance(self.name, str))
 @dataclass(eq=False, frozen=False)
 class Shipyard(SpaceStation):
     constructed_at: int = 0

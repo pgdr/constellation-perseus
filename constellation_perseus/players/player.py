@@ -21,6 +21,7 @@ class Player:
     def tick(self, time: int):
         pass
 
+    @icontract.require(lambda allotrope: isinstance(allotrope, Allotrope))
     def get_total(self, allotrope: Allotrope) -> int:
         return sum([hq.get_asset(allotrope) for hq in self.hqs])
 

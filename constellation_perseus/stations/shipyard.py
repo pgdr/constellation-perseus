@@ -47,9 +47,16 @@ class Shipyard(SpaceStation):
 
     def deploy_ship(self, ship: Ship):
         from constellation_perseus import Game
+        from constellation_perseus import Harvester
 
         Game.instance.add(ship, pos_from=self)
         del self.ship_construction[ship]
+        try:
+            if isinstance(ship, Harvester):
+                ship_hq = ship.default_hq
+                ship_hq.register_harvester(ship)
+        except AttributeError as e:
+            print(f"Cannot set hq. {e}")
 
     def tick(self, now: int):
         if not self.constructed:

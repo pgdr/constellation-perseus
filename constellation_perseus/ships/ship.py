@@ -18,6 +18,9 @@ from .shipclassification import ShipClassification
 @icontract.invariant(lambda self: self.owner is not None)
 @icontract.invariant(lambda self: isinstance(self.owner, Player))
 @icontract.invariant(lambda self: isinstance(self.classification, ShipClassification))
+@icontract.invariant(
+    lambda self: all([isinstance(k, Allotrope) for k in self.price.keys()])
+)
 @dataclass(eq=False)
 class Ship(GameObject):
     owner: Player

@@ -7,7 +7,7 @@ from ... import Allotropes, Allotrope
 
 
 def _price_fac():
-    return {Allotropes.OXYGEN: 1000}
+    return {Allotropes.OXYGEN.value: 1000}
 
 
 @dataclass(eq=False)

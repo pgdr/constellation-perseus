@@ -105,7 +105,7 @@ class Game:
         """
 
         n = time.time()
-        return 1000.0 * (n - self.initialize_time)
+        return int(1000.0 * (n - self.initialize_time))
 
     # @icontract...
     def send_ship_to_celestial(self, ship: Ship, cel: Celestial) -> Position:
@@ -243,7 +243,7 @@ class Game:
             self.setup()
 
         for i in range(100):
-            time.sleep(1)
+            time.sleep(0.999)
             print(f"{i}\ttick {time.time()}")
             self.tick()
 

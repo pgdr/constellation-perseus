@@ -23,7 +23,7 @@ def _gun_fac():
 
 
 def _price_fac():
-    return {Allotropes.OXYGEN: 3000, Allotropes.CARBON: 7000}
+    return {Allotropes.OXYGEN.value: 3000, Allotropes.CARBON.value: 7000}
 
 
 @dataclass(frozen=False, eq=False)

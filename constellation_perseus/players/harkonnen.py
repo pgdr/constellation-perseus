@@ -9,6 +9,9 @@ upon him like parasites.
 """
 from typing import List
 from dataclasses import dataclass, field
+
+import icontract
+
 from .player import Player
 from .. import Star, Stars, Position
 from .. import Ship
@@ -31,7 +34,6 @@ class Harkonnen(Player):
     INIT_TIME: int = 3000
 
     def tick(self, now: int):
-        print(f"tick {now}")
         if now < self.INIT_TIME:
             return
         if self.last_tick == -1:
@@ -70,14 +72,17 @@ class Harkonnen(Player):
         for s in self.ships:
             s.jumpto(enemy_pos)
 
+    @icontract.require(lambda idx: isinstance(idx, int))
+    @icontract.require(lambda idx: idx >= 0)
+    @icontract.require(lambda to_star: isinstance(to_star, Star))
     def _hvs_logistic(self, idx: int, to_star: Star, now: int):
         """ move hvs[idx] home if full, to star if empty, return [if action]"""
         hv = self.harvesters[idx]
         if hv.is_empty():
-            hv.star = to_star
+            hv.set_star(to_star, now)
             return True
         elif hv.is_full():
-            hv.send_home(hv.star or self.hq.star, now)
+            hv.send_home(self.hq.star, now)
             return True
         return False
 
@@ -146,21 +151,21 @@ class Harkonnen(Player):
 
         print("HARKONNEN builds oxygen miner.")
 
-        cm = BasicOxygenHarvester(star=Stars.PLEIONE, default_hq=self.hq, owner=self)
-        if Game.instance.buy(cm, self):
-            self.yard.construct_ship(cm, Game.instance.now())
-            self.harvesters.append(cm)
+        hv = BasicOxygenHarvester(star=Stars.PLEIONE, default_hq=self.hq, owner=self)
+        if Game.instance.buy(hv, self):
+            self.yard.construct_ship(hv, Game.instance.now())
+            self.harvesters.append(hv)
 
     def build_carbonminer(self):
         from constellation_perseus import Game
 
         print("HARKONNEN builds carbon miner.")
 
-        cm = BasicCarbonHarvester(star=Stars.PLEIONE, default_hq=self.hq, owner=self)
+        hv = BasicCarbonHarvester(star=Stars.PLEIONE, default_hq=self.hq, owner=self)
 
-        if Game.instance.buy(cm, self):
-            self.yard.construct_ship(cm, Game.instance.now())
-            self.harvesters.append(cm)
+        if Game.instance.buy(hv, self):
+            self.yard.construct_ship(hv, Game.instance.now())
+            self.harvesters.append(hv)
 
     def build_shipyard(self):
         from constellation_perseus import Game

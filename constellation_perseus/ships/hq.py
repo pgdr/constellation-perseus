@@ -30,9 +30,9 @@ class Hq(Ship):
     # The assets (allotropes) owned by this hq.
     assets: Dict[Allotrope, int] = field(
         default_factory=lambda: {
-            Allotropes.OXYGEN: 1000,
-            Allotropes.CARBON: 800,
-            Allotropes.SELENIUM: 7000,
+            Allotropes.OXYGEN.value: 1000,
+            Allotropes.CARBON.value: 800,
+            Allotropes.SELENIUM.value: 7000,
         }
     )
 
@@ -49,9 +49,16 @@ class Hq(Ship):
             self.withdraw_asset(a, p)
         return True
 
+    @icontract.require(
+        lambda ship: all([isinstance(k, Allotrope) for k in ship.price.keys()])
+    )
+    @icontract.require(
+        lambda self: all([isinstance(k, Allotrope) for k in self.assets.keys()])
+    )
     def can_afford(self, ship: Ship):
         for a, p in ship.price.items():
-            if p > self.assets[a]:
+            a_in_stock = self.assets.get(a, 0)
+            if p > a_in_stock:
                 return False
         return True
 
@@ -86,6 +93,11 @@ class Hq(Ship):
 
     @icontract.require(lambda harvester: isinstance(harvester, Harvester))
     @icontract.require(lambda harvester: harvester.amount >= 0)
+    @icontract.require(
+        lambda harvester: isinstance(
+            harvester.harvester_classification.allotrope, Allotrope
+        )
+    )
     @icontract.ensure(lambda harvester: harvester.amount == 0)
     def empty(self, harvester: Harvester):
         allotrope = harvester.harvester_classification.allotrope
@@ -98,22 +110,18 @@ class Hq(Ship):
     def add_allotrope(self, allotrope: Allotrope, amount: int):
         self.assets[allotrope] = self.get_asset(allotrope) + amount
 
-    def add_harvester(self, harvester: Harvester):
-        """Adds a harvester to this hq's internal harvesters, sets star of harvester to
-        be this hq's star.
-
-        """
-        self.harvesters.append(harvester)
-        harvester.set_star(self.star)
-        harvester.set_state(GameObjectState.HARVESTING)
+    @icontract.require(lambda harvester: isinstance(harvester, Harvester))
+    def register_harvester(self, harvester: Harvester):
+        if harvester not in self.harvesters:
+            self.harvesters.append(harvester)
 
     def tick(self, now: int):
         for harvester in self.harvesters:
             if harvester.destroyed():
                 pass  # TODO perform GC
-            elif harvester.harvesting():
+            elif not harvester.is_harvesting() and harvester.at_hq:
                 harvested = harvester.reset()
-                allotrope = harvester.classification.allotrope
+                allotrope = harvester.harvester_classification.allotrope
                 self.add_allotrope(allotrope, harvested)
 
     def __str__(self) -> str:

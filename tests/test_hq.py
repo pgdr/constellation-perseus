@@ -12,7 +12,7 @@ def test_hq_asset():
     harvester = BasicCarbonHarvester()
     harvester.amount = 123
     assert harvester.amount == 123
-    assert hq.get_asset(Allotropes.CARBON.value) == 0
+    assert hq.get_asset(Allotropes.CARBON.value) == 800
     hq.empty(harvester)
-    assert hq.get_asset(Allotropes.CARBON.value) == 123
+    assert hq.get_asset(Allotropes.CARBON.value) == 923
     assert harvester.amount == 0

@@ -23,7 +23,7 @@ class StarClassifications(enum.Enum):
     #
     # Ex. 10 Lacertra
     #
-    O = StarClassification("Blue", 30000, Allotropes.CARBON)
+    O = StarClassification("Blue", 30000, Allotropes.CARBON.value)
 
     #
     # Mass=18, Radius=7, Lumen=20000,
@@ -33,14 +33,14 @@ class StarClassifications(enum.Enum):
     # ex. Rigel Spica
     #
     #
-    B = StarClassification("Blue", 11000, Allotropes.OXYGEN)
+    B = StarClassification("Blue", 11000, Allotropes.OXYGEN.value)
 
     #
     # 3.2, 2.5, 80,
     # "Hydrogen (H) lines strongest for A0 stars, decreasing for other A's.",
     # "Sirius, Vega"
     #
-    A = StarClassification("Blue", 7500, Allotropes.PHOSPORUS)
+    A = StarClassification("Blue", 7500, Allotropes.PHOSPORUS.value)
 
     #
     # Mass=1.7, Radius=1.3, Lumen=6,
@@ -49,7 +49,7 @@ class StarClassifications(enum.Enum):
     #
     # ex. Canopus, Procyon
     #
-    F = StarClassification("Blue to White", 6000, Allotropes.SELENIUM)
+    F = StarClassification("Blue to White", 6000, Allotropes.SELENIUM.value)
 
     #
     # Mass=1.1, Radius=1.1, Lumen=1.2
@@ -59,7 +59,7 @@ class StarClassifications(enum.Enum):
     #
     # ex. Sun, Capella
     #
-    G = StarClassification("White to Yellow", 5000, Allotropes.OXYGEN)
+    G = StarClassification("White to Yellow", 5000, Allotropes.OXYGEN.value)
 
     #
     # Mass=0.8, Radius=0.9, Lumen=0.4
@@ -68,7 +68,7 @@ class StarClassifications(enum.Enum):
     #
     # ex. Arcturus, Aldebaran
     #
-    K = StarClassification("Orange to Red", 3500, Allotropes.CARBON)
+    K = StarClassification("Orange to Red", 3500, Allotropes.CARBON.value)
 
     #
     # Mass=0.3, Radius=0.4, Lumen=0.04
@@ -77,4 +77,4 @@ class StarClassifications(enum.Enum):
     #
     # ex. Betelgeuse, Antares
     #
-    M = StarClassification("Red", 2500, Allotropes.SULFUR)
+    M = StarClassification("Red", 2500, Allotropes.SULFUR.value)

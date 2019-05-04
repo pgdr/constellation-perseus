@@ -242,7 +242,7 @@ class Game:
         if not self.instance:
             self.setup()
 
-        for i in range(100):
+        for i in range(1000):
             time.sleep(0.999)
             print(f"{i}\ttick {time.time()}")
             self.tick()

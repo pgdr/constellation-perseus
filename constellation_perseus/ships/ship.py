@@ -41,12 +41,20 @@ class Ship(GameObject):
     def remaining_cooldowntime(self, now: int):
         if self.lastjumptime == -10 ** 10:
             return 0
-        return max(0, now - self.lastjumptime)
 
+        diff = now - self.lastjumptime
+        if diff >= self.cooldowntime:
+            return 0
+        return self.cooldowntime - diff
+
+    @icontract.require(lambda now: isinstance(now, int))
     @icontract.require(lambda now: now > 0)
     def canjump(self, now: int):
         return self.remaining_cooldowntime(now) <= 0
 
+    @icontract.require(lambda now: isinstance(now, int))
+    @icontract.require(lambda now: now >= 0)
+    @icontract.require(lambda pos: isinstance(pos, Position))
     def jumpto(self, pos: Position, now: int):
         if not self.canjump(now):
             return False

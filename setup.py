@@ -50,6 +50,8 @@ setup(
     keywords="constellation-perseus",
     version="0.0.0",
     install_requires=requirements(),
-    entry_points={},
+    entry_points={
+        "console_scripts": ["constellation-perseus = constellation_perseus:game_loop"]
+    },
     test_suite="tests",
 )

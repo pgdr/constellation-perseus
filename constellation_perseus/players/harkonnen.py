@@ -82,7 +82,8 @@ class Harkonnen(Player):
             hv.set_star(to_star, now)
             return True
         elif hv.is_full():
-            hv.send_home(self.hq.star, now)
+            hv.send_home(now)
+            print("is full!!")
             return True
         return False
 

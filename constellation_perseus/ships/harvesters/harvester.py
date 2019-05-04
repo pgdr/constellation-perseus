@@ -56,7 +56,6 @@ class Harvester(Ship):
         return True
 
     def tick(self, now: int):
-        print(f"{self} -> {self.amount} ({self.percentage()})% [{self.state}]")
         if self.at_hq and not self.is_empty():
             self.state = GameObjectState.EMPTYING
             self.default_hq.empty(self)
@@ -69,23 +68,19 @@ class Harvester(Ship):
             harv_speed = self.harvester_classification.speed
             if star_all == harv_all:
                 self.amount += harv_speed
-                print(
-                    f"\n\t harvesting  star:{star_all} & harv_all:{harv_all} -> {harv_speed} (cap={self.capacity})"
-                )
-            else:
-                print(f"\n\t wrong type!!!  star:{star_all} & harv_all:{harv_all}")
+
             if self.amount > self.capacity:
                 self.amount = self.capacity
-        hqstr = "at hq" if self.at_hq else "not at hq"
-        starstr = "at star" if self.star else "not at star"
-        print(f"Harvester fill level = {self.amount} {hqstr} {starstr}")
 
     def is_harvesting(self):
         return self.state == GameObjectState.HARVESTING
 
-    @icontract.require(lambda self: isinstance(self.default_hq, "Hq"))
+    @icontract.require(lambda self: self.default_hq is not None)
     def send_home(self, now: int):
-        if self.jumpto(s.position, now):
+        from constellation_perseus import Game
+
+        get = Game.instance.get_position
+        if self.jumpto(get(self.default_hq), now):
             self.at_hq = True
             self.star = None
             return True
